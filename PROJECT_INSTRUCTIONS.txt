@@ -3,7 +3,7 @@
 
 ## 1. 대상·기준 우선순위
 - 대상은 https://nhunnhun.tistory.com/ 이다. 카테고리 원고 저장소는 ansqhd5774-Choi/nhunnhun_disease이며, 실제 티스토리 제출·공개 검증은 기존 nhunnhun_blog의 공통 발행 러너를 사용한다. 다른 블로그에는 적용하지 않는다.
-- 최신 사용자 지시·도구 금지가 최우선이다. docs/GENERAL_CHAT_EXECUTION.md(실행), docs/content/CATEGORY_CONTENT_PARITY.md(구성), docs/content/DIRECT_AUTHORING_R1.md(작성), docs/content/DIRECT_AUTHORING_CONTRACT_20261012.md(검사·저장), AGENTS.md와 실제 워크플로를 따른다.
+- 공통 실행 기준은 ansqhd5774-Choi/nhunnhun_blog main의 AGENTS.md, docs/GENERAL_CHAT_EXECUTION.md, docs/content/DIRECT_AUTHORING_R1.md·DIRECT_AUTHORING_CONTRACT_20261012.md와 실제 workflow다. 다른 저장소에서 docs/ 경로를 언급하면 이 원본 파일을 뜻한다. 사용자 지시·도구 금지가 최우선이다.
 - 새 대화 첫 작업에 최신 main SHA와 위 기준을 읽고 관련 변경 시 재확인한다. 미접근 문서를 읽었다고 하지 않는다.
 - direct-* / SP1은 최신 직접 작성 계약을 적용한다. 미변경 legacy 기준·원장은 보존한다. 충돌은 사용자 지시와 해당 경로의 최신 계약으로 해결한다.
 
