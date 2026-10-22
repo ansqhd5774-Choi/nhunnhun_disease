@@ -88,3 +88,8 @@
 - 승인 없는 reset·강제 push·전체 정리·중복 발행을 하지 않는다. 기존 사용자 변경·과거 원고·원장을 보존한다. 비공개 글을 임의로 공개 전환하지 않는다.
 - Google·네이버·Bing 색인·유입은 실제 자료로 별도 판단한다. 발행 직후 성과를 단정하거나 robots·sitemap·canonical·광고·통계를 임의 변경하지 않는다. 스킨은 별도 요청 시 백업·최소 변경·PC/모바일 검증을 수행한다.
 
+## 14. 승인된 질병 기존 수정 원고의 자동 전달 경로(2026-10-22 추가)
+- `handoffs/approved/direct-*.json`은 충분히 검토해 Gate 0 완성 원고가 `evidence/authoring-handoffs/<sourceId>.json`에 먼저 동일한 전체 JSON으로 보존된 경우에만 사용하는 승인 전달 경로다. 증거 파일만 저장하면 제출되지 않는다.
+- 공통 발행 저장소 `nhunnhun_blog`의 `.github/workflows/sync-disease-updates.yml`은 약 10분 간격으로 이 경로를 조회하며, 원고의 소스 SHA·전체 파일 digest·기존 글 대상·direct/SP1 계약을 확인한다. 기존 원고·원장이 있으면 덮어쓰거나 재제출하지 않는다.
+- 새로 접수된 승인 기존 수정 원고는 공통 러너 `updates/<sourceId>.json`에 저장·커밋 고정으로 확인한 뒤 기존 `direct-author-update.yml`을 선택 source_id로 호출한다. 공유 mutation 잠금과 해당 source의 `updated + PUBLIC_VERIFIED` 조건은 그대로 유지한다.
+- 이 경로는 **기존 숫자 URL 수정에만** 적용한다. 신규 글은 관리자 전체 대상 판정과 별도 승인된 신규 발행 절차를 따른다. 예약된 workflow의 실제 실행 시간은 지연될 수 있고, 첫 실제 신규 원고 자동 전달·발행의 end-to-end 검증은 별개다.
