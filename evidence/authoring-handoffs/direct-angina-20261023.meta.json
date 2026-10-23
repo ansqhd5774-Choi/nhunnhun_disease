@@ -3,9 +3,9 @@
   "title": "협심증 초기증상｜가슴 통증 위치·지속시간·심근경색 차이·검사·치료",
   "operation": "create",
   "category": "질병",
-  "sourceSha256": "cb2eb74e3b54d71ad81ca280c659db6293a08429ea0b947585df3590754239b0",
+  "sourceSha256": "e016cd9ea0ca61da8d2228e44029c502f00d01b19bf8b986de2ce43ee960aba2",
   "sourceArchivePath": "evidence/authoring-handoffs/direct-angina-20261023.json",
-  "archiveCommit": "bf3ca20f7a3a3e318cb2b1513af90bdd231e7c73",
+  "archiveCommit": "901cacf40ece2d5a8699ab9791ffb0fd6e980324",
   "targetResolution": {
     "decision": "new",
     "scanned": 389,
@@ -27,5 +27,5 @@
     "medicalReferences": 9,
     "medicalAccuracyReviewed": true
   },
-  "state": "GITHUB_SOURCE_CONFIRMED; ready for shared publishing runner"
+  "state": "GITHUB_SOURCE_CONFIRMED; emphasis preflight correction applied"
 }
