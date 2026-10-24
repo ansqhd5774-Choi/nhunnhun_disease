@@ -51,7 +51,7 @@
 - 강조는 1단계 strong, 2단계 mark>strong, 3단계 mark>u>strong이다. 핵심 성분·수치·작용·조건·궁합 이유·선택·안전 행동·보관 기준에 작성과 동시에 적용한다. 표에도 적용하며 강조만 훑어도 핵심이 보여야 한다.
 - 공통 누락 방지 하한은 strong18·mark8·mark>u>strong2다. 단독 mark·부분 중첩·근거 한계 강조는 금지하며 안전 항목 밖 핵심 강조도 필요하다. 하한을 채우려고 사실이나 효능 문장을 만들지 않는다. 전체 문단 자동 강조·무의미한 태그 늘리기는 하지 않는다.
 - 신규와 direct SP1 전체 수정은 서로 다른 본문 이미지 최소3개를 준비한다. HTTPS·alt·주제 적합성·대표 이미지·원출처·저작자·라이선스·출처 연결·중복을 확인하고 유효한 기존 검토를 재사용한다.
-- imageReview 허용 키는 src, alt, role, composition, sourcePage, author, license, 선택적 boolean visualChecked다. 현재 허용 role/composition·대표 이미지 조건·Commons File 원출처 및 귀속 링크는 실제 image-review 코드 계약에 맞춘다. 임의 필드를 추가하지 않는다.
+- imageReview 허용 키는 src, alt, role, composition, sourcePage, author, license, 선택적 boolean visualChecked다. 현재 허용 role/composition·대표 이미지 조건을 따르고, 원출처는 위키미디어에 한정하지 않는다. 사진별 원출처 HTTPS 링크·저작자·허용 라이선스·본문 귀속 링크는 실제 image-review 코드 계약에 맞춘다. 임의 필드를 추가하지 않는다.
 - visualChecked는 필수 게이트가 아니다. 누락/false 때문에 제출을 막지 않고 실제 확인 없이 true를 자동 기록하지 않는다. 문자열 값도 허용하지 않는다. 원출처·라이선스 검사를 시각 확인 기록으로 대체하지 않는다.
 - 기존 관련 글을 조사 중 찾고 본문 작성과 함께 링크한다. 개수를 채우려고 무관한 링크·사진을 넣지 않는다. 러너가 공개 이미지 로딩·대표 이미지·OG를 확인하며 일반 Chat에 별도 브라우저를 요구하지 않는다.
 
