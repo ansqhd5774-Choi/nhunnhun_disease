@@ -1,3 +1,4 @@
+import {WRITER_WAIT_MS} from '../publishing/writer-lock.mjs';
 import {RUNNER_LABELS} from '../publishing/runner-gate.mjs';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
@@ -78,4 +79,12 @@ test('manual new-post validation never scans unrelated manuscripts',()=>{
  const cli=readFileSync('publishing/validate-selected-content.mjs','utf8');
  assert.match(cli,/assertSelectedSource\(kind,id\)/);
  assert.match(cli,/runContentCli\(\['--check'/);
+});
+
+test('writer wait leaves the original mutation runtime budget inside the job timeout',()=>{
+ assert.equal(WRITER_WAIT_MS,30*60*1000);
+ for(const [name,job] of [['publish-posts.yml','publish'],['update-posts.yml','update']]){
+  const w=YAML.parse(readFileSync('.github/workflows/'+name,'utf8'));
+  assert.ok(w.jobs[job]['timeout-minutes']*60*1000>=WRITER_WAIT_MS+15*60*1000);
+ }
 });
