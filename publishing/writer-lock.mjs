@@ -9,7 +9,8 @@ export const writerLockPath = env => join(env.ProgramData || 'C:\\ProgramData','
 export function assertWriterHost(env=process.env,host=hostname()) {
   if (!env.TISTORY_WRITER_HOST || env.TISTORY_WRITER_HOST.toLowerCase() !== host.toLowerCase()) throw Error('E_WRITER_HOST_NOT_CONFIGURED');
 }
-export async function acquireWriterLock(path,owner,{timeoutMs=60000,pollMs=1000}={}) {
+export const WRITER_WAIT_MS=30*60*1000;
+export async function acquireWriterLock(path,owner,{timeoutMs=WRITER_WAIT_MS,pollMs=1000}={}) {
   const {dirname}=await import('node:path');
   await mkdir(dirname(path),{recursive:true});
   const deadline=Date.now()+timeoutMs;

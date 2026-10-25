@@ -99,7 +99,7 @@ jobs:
     defaults:
       run:
         shell: cmd
-    timeout-minutes: 12
+    timeout-minutes: 55
     permissions:
       contents: write
     steps:
