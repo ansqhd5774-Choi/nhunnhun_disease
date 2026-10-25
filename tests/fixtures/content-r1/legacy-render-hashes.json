@@ -1,0 +1,402 @@
+[
+  {
+    "path": "posts/abalone-nutrition-benefits-20261003.json",
+    "sourceSha256": "a4efc79daf63b401b85c5ea9e165c15a521cc8b7c9c051e6e8156c9144b4485f",
+    "error": "E_EDITORIAL_IMAGE_MINIMUM"
+  },
+  {
+    "path": "posts/aged-pumpkin-calories-benefits-storage-vs-kabocha-porridge-20261006.json",
+    "sourceSha256": "2b526e6b66023d8a8390a51967f5b19005e6a78d450929f879b05c3654a09ff1",
+    "renderSha256": "8e117dc89298b0b9cf879b6783563fb3755c8891f16919e5dfc1cceaecc6cb37"
+  },
+  {
+    "path": "posts/aphthous-vs-herpes-labialis-20261006.json",
+    "sourceSha256": "86782ca3510fe14829be8b96475c630ddc07c700a73ec82831d2d18721080792",
+    "renderSha256": "96b0cf9f9e15c2b75af0f0bd60e3cfcede07bc0bc42dfbd87d4d47db1a4a7ec5"
+  },
+  {
+    "path": "posts/apple-benefits-20261002.json",
+    "sourceSha256": "e3dd22ed8fb1fca7336023e49907ca586174d51461531ae9215169d1a817c85d",
+    "error": "E_EDITORIAL_SOURCE_TOO_THIN"
+  },
+  {
+    "path": "posts/artificial-tears-preservative-free-vs-preserved-20261006.json",
+    "sourceSha256": "d367ab38454f71847dbaf9c9b9a504ae0801b465e7ba89cbf1762db8d44aa7c1",
+    "renderSha256": "fc12fc64d2593fb5a19d9d6f71a59d40b395ab8f22e6f55d2672dab6c259e71a"
+  },
+  {
+    "path": "posts/banana-ripeness-blood-sugar-20261003.json",
+    "sourceSha256": "da4b38415a0898ae03610e1da147da27c71165c8896b57eb2f7772bbaa6e4040",
+    "error": "E_EDITORIAL_SOURCE_TOO_THIN"
+  },
+  {
+    "path": "posts/cetirizine-vs-loratadine-rhinitis-20261006.json",
+    "sourceSha256": "b30273a1c59c6a65851263fdf03bed07ec386051eb3ba3a7dc6d2e6bbdbfb950",
+    "renderSha256": "db0dafa6c7ee1bf8917c29bbce4b78f132b7987ff24be7eed5213e19872c8edf"
+  },
+  {
+    "path": "posts/chestnut-calories-benefits-storage-20261006.json",
+    "sourceSha256": "45716319a3f98c821f6046fce8f73532c5b743d0880cb238350cb5affa58e55a",
+    "renderSha256": "201ac6fec5049728d0682f9bb52f3ef9a20482532f69bbfa75687631957f9473"
+  },
+  {
+    "path": "posts/chicken-breast-protein-diet-storage-20261004.json",
+    "sourceSha256": "26eaa006d425930d82efe7533f2a6034c50e49c8c24e569571d093038878450c",
+    "renderSha256": "ee7c78942c03c12715204fa01e8ba96975252e79acd64ddd21e1e196919dbad0"
+  },
+  {
+    "path": "posts/cloud-publish-test-20261002.json",
+    "sourceSha256": "6014726dd8cbf4a01ada5e9ba37ab3cb32e2631bb045237e5201780ce56dc6c0",
+    "error": "E_EDITORIAL_SOURCE_TOO_THIN"
+  },
+  {
+    "path": "posts/coffee-caffeine-daily-limit-sleep-pregnancy-20261004.json",
+    "sourceSha256": "6612690ede87f23b52eaf680e5005466233687f1ce961d5f3ea1e2b93ebef2a9",
+    "renderSha256": "3d4435b191f23f92c488743a9b0ec5c299e11e5fbbd24ffae518b6a865f2dcf6"
+  },
+  {
+    "path": "posts/cold-vs-flu-symptoms-20261005.json",
+    "sourceSha256": "ce2a14a037b4d99a204fee528efa4547bd837714bfa1a99595fe76640d5d6a97",
+    "renderSha256": "5ccad3e30dbe2613dfcfac8585a7c0e7257edfab03c4305aacc644e2e221b46c"
+  },
+  {
+    "path": "posts/covid19-vaccination-2026-2027-korea-20261005.json",
+    "sourceSha256": "4a6c72395aa19706fdcd842e12c3c90fdeac05abb2fdbeda5c886d5901f96da2",
+    "renderSha256": "40521a772f336cfa096c7c813c9533e6e765d280abf925fe77c1ffc0b98e0fc2"
+  },
+  {
+    "path": "posts/creatine-monohydrate-dose-safety-20261004.json",
+    "sourceSha256": "fa2e317760833fa2d072f61c8cd535d49ae42ff287c0e8f775706d54ca6c8d14",
+    "renderSha256": "cc0673b063049b7135e0808c9853e78d95ee4ce5f0a3eaabe42000b522da0cbd"
+  },
+  {
+    "path": "posts/daeha-shrimp-season-cholesterol-storage-20261006.json",
+    "sourceSha256": "72ebdf9e1921626ad1380c9f2f24b91be9a531babe448f2db49b061b4b26148c",
+    "renderSha256": "41d3198b876ee6e834859bfcbef2db761c13c5078cb95f06b8a31553e650500b"
+  },
+  {
+    "path": "posts/efpeglenatide-epe-obesity-drug-20261005.json",
+    "sourceSha256": "6289887b2ec543cd58be622bca4b3f8cdf3ac5ace5dcc918164f82fad5f4a884",
+    "renderSha256": "1a356962b40a0df52c2deb29936b5c06f8971ce7403e40088624a1bde227882e"
+  },
+  {
+    "path": "posts/example-post.json",
+    "sourceSha256": "cd8317c734851ec4a76d02d2a26754a146d7e852cd4f1ce8ec9a9561a87d5a7e",
+    "error": "E_EDITORIAL_SOURCE_TOO_THIN"
+  },
+  {
+    "path": "posts/fig-benefits-nutrition-storage-20261004.json",
+    "sourceSha256": "622d2256851fd669bdf23be4945d2672ce9761fa5859feb41fd04b400c16b842",
+    "renderSha256": "69495e6fc056173e5410ab006daaa536a4e04c2541b26ab960b51885e0604436"
+  },
+  {
+    "path": "posts/flu-contagious-isolation-return-20261006.json",
+    "sourceSha256": "635588bff979a6049c1f055dfdb994332782bb78eb22694735899f657d0a42c3",
+    "renderSha256": "95c8b849cf05300193835e8e9e677047e7b7ea3be16946318e90e01e850ee164"
+  },
+  {
+    "path": "posts/flu-vaccination-2026-2027-korea-20261005.json",
+    "sourceSha256": "64b65d251bd50ab61d003707d9e69c0c46db1ea18769bcae69816d7fa3b67c8c",
+    "renderSha256": "2f5d6b5441d8b2038d476d9c306ccf9bb22dc67736a328518dcca37ed0885b2a"
+  },
+  {
+    "path": "posts/ginger-cheong-benefits-sugar-storage-20261004.json",
+    "sourceSha256": "e21459c81c8b96bed9a187933d67f0d5d58f53af23fcf9a2468a462ff7a9cbc0",
+    "renderSha256": "6556b9996107fca48171fdca8c1b03f1205ac0ff6fc5bb2b33aeeccd78e4cc18"
+  },
+  {
+    "path": "posts/greek-yogurt-nutrition-protein-20261004.json",
+    "sourceSha256": "ba3a280505efa4a997de34f1417ce5a9bbf26057b33ef6d4367fc5f6eadca85f",
+    "renderSha256": "ab1648026754329e3aa242035943c69c2f39137ceb682ee83764ba0eccded67d"
+  },
+  {
+    "path": "posts/ibuprofen-vs-dexibuprofen-fever-pain-20261006.json",
+    "sourceSha256": "4a4bb841cb0e91c25795da0c70a25903878de05504d9bbaa579381a5cdecbaf8",
+    "renderSha256": "aa5530ed91409de73597ec07d9dbc4e9ad87432b71d9708cfe1b4d721037b32a"
+  },
+  {
+    "path": "posts/iron-deficiency-daily-intake-absorption-20261006.json",
+    "sourceSha256": "bbac5689f5d61871271bc0af4254e4b679eb0e179912b8e7c1ad95e4320932fa",
+    "renderSha256": "76281b8e429e5282792346ff1327877b0394ece62321576ee8aaf747395f16e6"
+  },
+  {
+    "path": "posts/mango-benefits-nutrition-20261003.json",
+    "sourceSha256": "1ddbdc731b8151161e43f3e51b24e8884a83bb600dbf28b185bee5a3ed071e54",
+    "error": "E_EDITORIAL_IMAGE_MINIMUM"
+  },
+  {
+    "path": "posts/melatonin-sleep-dose-safety-20261004.json",
+    "sourceSha256": "445884ee1cf62a17221aa05e2fcb345b4c8b8a246a09824409e4d1eabb8787a1",
+    "renderSha256": "ab570a4943a9fbd3ef4aeee20233d8d2ff6617609a66d81309bebb29af5691cb"
+  },
+  {
+    "path": "posts/omega3-epa-dha-dose-safety-20261004.json",
+    "sourceSha256": "11d23f4348f558eff10dfb83069d4e4731542b4e63d9a68999da5a2997adbe27",
+    "renderSha256": "c2419358c540d106fbed8b843553a1a5bb4bd4abb6760a16adb115ea2f24949d"
+  },
+  {
+    "path": "posts/oyster-season-norovirus-storage-20261006.json",
+    "sourceSha256": "5b9c393a2f7b09f8151b5776a0715a858c689bfef256998eb3d5574c3f8116a3",
+    "renderSha256": "82d7e1421d647209fa8c491a92556991598fb396d0e0194b5582dc73a421329a"
+  },
+  {
+    "path": "posts/pomegranate-benefits-calories-seeds-selection-storage-20261006.json",
+    "sourceSha256": "252cd8241b39483b30687dc401163ef422b5f182866c370e83de0b05312ec3ff",
+    "renderSha256": "73e0fe9880266c69a7640c623cf7c25a0ee9504635ad5d15661648c445f63f5b"
+  },
+  {
+    "path": "posts/red-ginseng-benefits-safety-20261004.json",
+    "sourceSha256": "faecabc2753c97d16373fa2087661a71f40757ba36ab559e3c21d1ba3ab655ad",
+    "error": "E_EDITORIAL_IMAGE_MINIMUM"
+  },
+  {
+    "path": "posts/red-snow-crab-nutrition-storage-20261004.json",
+    "sourceSha256": "7a8aaa403a916aeafea9dee2a0aa7048cbb50f4d5d308fc109941e12cbe0323c",
+    "renderSha256": "c1a256c03ddce26eefcf53dad3618b82e1120c200d5b4f21a579030104e82d5b"
+  },
+  {
+    "path": "posts/sesame-oil-benefits-calories-storage-20261006.json",
+    "sourceSha256": "e01186d722e8cdc6e8474bc485763e6f37eea502b854b93b2d5a1d862e094ab5",
+    "renderSha256": "5bdea1ddbf0778a6d9bdad5e6cb5cdb808c3d7a0cefaef1ffb9d667c9186b1b1"
+  },
+  {
+    "path": "posts/shiitake-nutrition-fresh-vs-dried-soaking-storage-20261006.json",
+    "sourceSha256": "a7f4fe1e8c7456bf283f0719b84e36993450dca14d28fa9826c502573434e2f7",
+    "renderSha256": "b1424fa3cf2be8ca710cc0220503f8af4f8a4245ee8c682e830bb6a2a6ebbe7e"
+  },
+  {
+    "path": "posts/shine-muscat-nutrition-storage-20261004.json",
+    "sourceSha256": "c58fc2139deab53667f083f010d7d435b03602909baa2a260f72c99e1b79a200",
+    "renderSha256": "cd985c251ac2ab1eab12e469ece66594b8db984339d01736d6ea1e5ce08d19c5"
+  },
+  {
+    "path": "posts/shingles-early-symptoms-vaccine-20261006.json",
+    "sourceSha256": "57a699e6d8375189b817681719d6d4de67d04aeeaf973cece792d7b90fcb0d14",
+    "renderSha256": "1001532133db03d96cd137e7b12f050cb0c7820d06047a6872748207b070db37"
+  },
+  {
+    "path": "posts/sweet-persimmon-nutrition-storage-20261004.json",
+    "sourceSha256": "66efe410b65a14606539c96115bd9ccfda3fc1eada5782367a4fd5ef496ec6ec",
+    "renderSha256": "0ebaaa64d81159846c32fa9d8e08b3a444ddb557178ac35b8e6101a071844401"
+  },
+  {
+    "path": "posts/sweet-potato-calories-blood-sugar-storage-20261006.json",
+    "sourceSha256": "6f3246e59c1eb6450d7179b5ddab37171daaecc6d84965bd3633cdeb9d811454",
+    "renderSha256": "7aef18cdb475b746973d5b2cd4dfe72301d20cfc0a8a5ac5bc9954651e875c62"
+  },
+  {
+    "path": "posts/tomato-lycopene-nutrition-storage-20261004.json",
+    "sourceSha256": "2fe5cff3a814a51dc2af908cbd87c63f73a140d93ee30da501cb46b2f3a80c31",
+    "renderSha256": "d56cc46ceb6845610042555cae739fcfc3be5fecb331298506168e2fd9c04507"
+  },
+  {
+    "path": "posts/tonsil-stones-causes-removal-prevention-halitosis-20261006.json",
+    "sourceSha256": "f29ddfcfa450eaf9c107afefd1d531c20b6bd60f22577e8df615fdac1e8ea972",
+    "renderSha256": "e3662ff1a264922cff8ff1adf45032e771a2e92f68ff90058db612904d06dd7f"
+  },
+  {
+    "path": "posts/wegovy-vs-mounjaro-vs-efpe-20261005.json",
+    "sourceSha256": "9450333432320c73293144a9225464892498d8ed909ae9caa30d4e9603fc0b43",
+    "renderSha256": "c68a09c21b56a31e4554231db3c9c77588fa56023d7ca292849615e300a7ac4b"
+  },
+  {
+    "path": "authoring/post-source-archive/yuja-cheong-calories-sugar-daily-intake-storage-20261006.json",
+    "sourceSha256": "4c735fae2173ac132f9f96030e738254e461e8faed23b9b96b85f3f6e972742a",
+    "renderSha256": "36be6708d4485ee5356ed373e73de349416ca335de9eead54f4fc96e062924e7"
+  },
+  {
+    "path": "updates/update-110-saponin-evidence-20261004.json",
+    "sourceSha256": "90913b8a8f04dab99573053b2777ac3c6345106a05897789dfc4073343e7dfd9",
+    "renderSha256": "4e8a10ee8846e661e7b1923014c54730e7bac3032d69c67cfc9e07021abbcdf3"
+  },
+  {
+    "path": "updates/update-111-coffee-wording-20261004-r2.json",
+    "sourceSha256": "5a2d4f1263017fe959cd204247f5e864ce75a543222bd639065ef6aa7a436c23",
+    "renderSha256": "a415776c4de2fd69fb734b3d9e0c5a96386f32207cbbabb1fe03cc2b4a1d6ad0"
+  },
+  {
+    "path": "updates/update-112-caffeine-safety-20261004.json",
+    "sourceSha256": "4b898deba335b82cbb3ab09c709cc760f2d18e5475a0c00752b5251148583a5a",
+    "renderSha256": "082e8057a144ea52e3b26ed39b95d8b3aeccd62eb4caae04071ae9bf792a358d"
+  },
+  {
+    "path": "updates/update-17-lactoferrin-evidence-20261004.json",
+    "sourceSha256": "110ea010c9b2a1844ee12761f903d809f6dc8a2a6f9b055c67440d7f5eed8ac3",
+    "renderSha256": "88c58885585736390cd6d002c420a7525c56756c8c02ea1b38fbc2321879ed98"
+  },
+  {
+    "path": "updates/update-18-arginine-evidence-20261004.json",
+    "sourceSha256": "f6adb4e75f139ccd58c155dc8164ebde9e213cab72f793a2ae91ca6b5f9ef654",
+    "renderSha256": "15b622e260e388d0a1114f9852ee04fc29c99d2d72a02eb95c3b061da4f3aec9"
+  },
+  {
+    "path": "updates/update-183-kabocha-nutrition-20261004.json",
+    "sourceSha256": "ee559de92e26d1ccb81f21000b31e1581e41aa02b3942a0aeb6bcc6eaf30dc0c",
+    "renderSha256": "0ff8aecb325666070ac48e10d313aa10736f64472795d44c264f0c10ed985691"
+  },
+  {
+    "path": "updates/update-196-salsa-full-rewrite-r3-20261007.json",
+    "sourceSha256": "5c512c1872e64e6965602841327f4016a2e8f6bc34467f193d6ce714a80a7609",
+    "renderSha256": "32796ea2a6d466e166077247f43a706fe2d3234fd7be69db6db8e6d63719f166"
+  },
+  {
+    "path": "updates/update-199-baked-beans-search-20261004.json",
+    "sourceSha256": "ebe8e945989842ff4def05946cd64ae979557e2f209b3985de00b172a830b2d0",
+    "renderSha256": "a580b7da868fbe699184fbae3a515dbb39b820d1561d4e25631e933ea7a575e5"
+  },
+  {
+    "path": "updates/update-204-oatmeal-full-rewrite-r3-20261007.json",
+    "sourceSha256": "4ec1eac4473b3cee71b71cc96a315a1f4eaf872b2973a5cce092a524bb907450",
+    "renderSha256": "d405d207d5918858f7f5ba420545dd872f991bf8871a36c2d6c50dc7d1681543"
+  },
+  {
+    "path": "updates/update-232-carnosic-acid-full-rewrite-r3-20261007.json",
+    "sourceSha256": "b4026b85087a9113d05da13950263024de8a272037d125edb3a95df388b3b274",
+    "renderSha256": "ffdf2b892cc272ab06ead8bea757093ae735dfb18f085ad6258afd7b8dfd1625"
+  },
+  {
+    "path": "updates/update-264-acetaminophen-cold-medicine-duplicate-r3-20261006.json",
+    "sourceSha256": "998a01cdbaf8c270c83278814d77ae468c2dc671f636a577ad0ec30ccdc0bc98",
+    "renderSha256": "431cfa847acf882d7caa02f09dfe6d40dc94771a95d3342b012a1ef67c608347"
+  },
+  {
+    "path": "authoring/update-source-archive/update-275-roxithromycin-safety-20261004.json",
+    "sourceSha256": "b28d459631f2dcea09d1ad1a6c3329fce7e902617098b54a15372be3d077a0ca",
+    "renderSha256": "4a740096248f1617295e70c36c4437cf6342f332709c42b891ffbaa5bf9d917b"
+  },
+  {
+    "path": "updates/update-284-crocetin-full-rewrite-r3-20261007.json",
+    "sourceSha256": "de7f10e420cf335fef1523bf83b9363f7acce08a935e2bb4ab450c45bca7fb95",
+    "renderSha256": "5f15caed1c49566ec84202aa7954b8df0abdc419aa469089c0d80712979ba17d"
+  },
+  {
+    "path": "updates/update-290-aloe-safety-20261004.json",
+    "sourceSha256": "cc7bc9aaa77e68f28b2204f49babd9077bc89d6e9fa2987b88ba4b777cf7df5d",
+    "renderSha256": "fdf37c0f5921f8144c7f767c3c3d1af4799ef9fc314f208b217b2f0a8d5d41f4"
+  },
+  {
+    "path": "changes/archive-updates/update-292-zeaxanthin-full-rewrite-r3-r2-20261007.json",
+    "sourceSha256": "9cbd6b8bf5dce95ee8a709bac17fbbd2101dbc92ca74e275928161e00b817219",
+    "renderSha256": "89e1822ef0f1fa7b1aff2a7839eb880b8d6fabb0626464370f65cbd3b7cb5bf7"
+  },
+  {
+    "path": "updates/update-304-gas-hwalmyeongsu-safety-20261004.json",
+    "sourceSha256": "466c7832491d3dd91c977c06689cfb9f9d236e36119ac50fe3717a8f313a9f35",
+    "renderSha256": "9440ba91a6d2f368be6c76c36ee2c0a4bc0f9606b39766b9a4cb6c4a6eeeaca2"
+  },
+  {
+    "path": "updates/update-305-bromelain-evidence-20261004.json",
+    "sourceSha256": "d4c04f91b37e8450e8777e18da49d5bed98720091f95a0b27476c5d4c2ac72d7",
+    "renderSha256": "7c169cd066680a4e564571646969379060c2f152bfa07d2591c6f5d00f6a32ea"
+  },
+  {
+    "path": "changes/archive-updates/update-310-granola-full-rewrite-r3-20261007.json",
+    "sourceSha256": "3fe7b8d5c59b3005ef5d4ca52c987549c57ab6fbe1e40e39b9652924d8bc9dac",
+    "renderSha256": "8c6a61911f3ce0526731b15e7137d7bbbd19afc1f9b08940ad3400294e3b580f"
+  },
+  {
+    "path": "updates/update-313-madecassol-safety-20261004.json",
+    "sourceSha256": "5a291e3f87457668bbda89a2d06f09c53c95ec6340718dfe404dcda961f1eb7c",
+    "renderSha256": "1d45fb732d95854c360438559035e67983d64b4294d6645729747d3a36ed314f"
+  },
+  {
+    "path": "authoring/update-source-archive/update-327-eggplant-branch-correction-r3-20261007.json",
+    "sourceSha256": "b3e3607fa2c449c5dd3fb7a4aa5de071b35b22d562df675baca1db30fd42876f",
+    "renderSha256": "6743f8f691a21678186720eddd6b16946553a4e03416449e1531bebc405483e1"
+  },
+  {
+    "path": "updates/update-340-dutasteride-safety-20261004.json",
+    "sourceSha256": "6c5aa8ccdbe7884c05ea36e69e5bd6858bbf7d6e4f1b949fbd9d0d53ec61bda2",
+    "renderSha256": "7ef0c5e3b00f418afb9a9716b7ba37f0ff28cb0260ccc72c119a6c88d010f0e4"
+  },
+  {
+    "path": "updates/update-343-pycnogenol-evidence-dose-r3-20261007.json",
+    "sourceSha256": "9718242c55cdeb703231f0738a2532fd028f7e84a874391e711904600778a87f",
+    "renderSha256": "3ea70c5ead866ba7006e204f98a98b8ebc8566445a79ede62f90cd1a9039501c"
+  },
+  {
+    "path": "updates/update-345-pine-bark-extract-attribution-20261004-r2.json",
+    "sourceSha256": "cbadf27fd8cb90d662686ffb40116a96f12d73691d821059a844f48ce6c03482",
+    "renderSha256": "c367e3df9dcce577fc259471d9582ce0fb05536043c2da714efa4935ad1f00a4"
+  },
+  {
+    "path": "updates/update-346-pectin-antioxidant-dose-r3-20261007.json",
+    "sourceSha256": "0164925b0e82450d8e587134dfb339138084938d4711a1d9f8f29dd917706f89",
+    "renderSha256": "734af90bb0023584436982238d3725bd5468f20d2f537b57f49ce48186406910"
+  },
+  {
+    "path": "updates/update-353-daeha-evidence-20261004.json",
+    "sourceSha256": "f32953bf1af8453e13e547930bf1541bfe9ce2bfb7bc1a44fc164949f121fde7",
+    "renderSha256": "1afae05b179619c04e22ce30fdd474f312cce42df4942297ec7e86cbf2b38b99"
+  },
+  {
+    "path": "updates/update-354-blue-crab-evidence-20261004.json",
+    "sourceSha256": "6a7b7afc3b3c61c747034f5fd525530ab976c1975f8d23d66a32ecd798f86448",
+    "renderSha256": "eb5167a19c7ca58abd29b4ca846cdc6954547c371cccc84106bc2143bc7e8f7b"
+  },
+  {
+    "path": "updates/update-363-persimmon-image-review-20261004.json",
+    "sourceSha256": "2c08712b271ff49775e45fdf3da8625180d528ec5ceeed110b5ccd6a02763462",
+    "renderSha256": "a504e020ba2aaac5b4c216328fae2586692683751ddc3685f696a77d598e35fd"
+  },
+  {
+    "path": "updates/update-367-ginger-cheong-reader-satisfaction-r2-20261006.json",
+    "sourceSha256": "ecabe070da1b929ebb77d2dd7c30ce504743f600c0679cd68df043c7a27bfada",
+    "renderSha256": "895e18a28cddc2ed7bd7acbbcc5d22ac8e134deff94bff535673a9527fc09102"
+  },
+  {
+    "path": "updates/update-369-melatonin-practical-dosing-r2-20261006.json",
+    "sourceSha256": "64f08cf297c828a5e11cdc1e9c730f8d62b6fd106543564bcc71ee07d5abb845",
+    "renderSha256": "a0d4c26662876ad15781ad5c3dca3e51a6258c25669400e413a788d09dfbb249"
+  },
+  {
+    "path": "updates/update-372-red-snow-crab-search-intent-r2-20261005.json",
+    "sourceSha256": "5814550c07abd18e92eb8126ad2002927d02df367ff00c3d84f91b6d69bd0f73",
+    "renderSha256": "6c52e66aee5f657048aef87869c6bd18291c9e9c420a81dfab070f98f0b4bb0b"
+  },
+  {
+    "path": "updates/update-373-flu-vaccine-crosslink-r2-20261006.json",
+    "sourceSha256": "60c5ff406902ea9548b810709c9642056de663584b42e613beb6cacaad1189d0",
+    "renderSha256": "105e8e3ba41c84bdfc7bbdc3505c9b4554f8c845f642f8e42df99a269d1c8f7f"
+  },
+  {
+    "path": "updates/update-377-wegovy-mounjaro-efpe-search-intent-r3-20261005.json",
+    "sourceSha256": "8b59ed1fb223843d6a895dbd9c5a4ef449a848f1082c2264875f001f6176123e",
+    "renderSha256": "131b3517a22cfb39f8370f88d3930651e5d29ad0bd9b291c342b258a9112677c"
+  },
+  {
+    "path": "updates/update-378-covid-vaccine-general-adult-options-r2-20261006.json",
+    "sourceSha256": "3aada6f2b9de6fd112e1900396fac1e789b1ca2c2dd568774e71e846a05c05d9",
+    "renderSha256": "3993063608947a41b10bd1f0ac68224beb1f5ae0b72c401947d7bd1fb7584189"
+  },
+  {
+    "path": "updates/update-383-iron-images-r4-20261006.json",
+    "sourceSha256": "386bdc628fe1f9502a9f247f1a19de80f2512361176cdf88a1ac7b2478ac02df",
+    "renderSha256": "4a7f6b424c32ad4719328631a5c9a738d1cc3b004f6e0786dcd0b4aeae1b3c40"
+  },
+  {
+    "path": "updates/update-54-retinol-intake-topical-r3-20261007.json",
+    "sourceSha256": "0bfdf5c7354d70161b2a4f4cac83d2ce7db1d798e3e344ba1c86bc9ed21be5d8",
+    "renderSha256": "13cb30d969f7b9802f64ebb699b08dc4f6ed60a3ec9d11ed2e81749b75a494e1"
+  },
+  {
+    "path": "updates/update-64-omega3-evidence-20261004.json",
+    "sourceSha256": "ddb5029f1bff265f1750c924b3494ac7c50852be25628ddf7bd3a6ce2e73ae97",
+    "renderSha256": "daa3b60e69235c68fa1b5c83549f4fb6b1a3ac9870a1aec04f530f0c854f7e0b"
+  },
+  {
+    "path": "updates/update-66-vitamin-d-deficiency-intake-r3-20261006.json",
+    "sourceSha256": "29914b62a164183189fa7271e30d188735ec43b8fe2678af5c4783d86d11dac1",
+    "renderSha256": "bc6320d05faa3015efc0fa1126600724f7711b9b3b0195261285c2f474a30d3b"
+  },
+  {
+    "path": "updates/update-70-beta-carotene-full-rewrite-r3-20261007.json",
+    "sourceSha256": "024bc5a59d46f8134ebe6b8d323450e62249e296fa0e5b7b06d6eb0b594956ba",
+    "renderSha256": "ccadedc3aa4d4569500f2f02bf5272cde6a27d94e76415cacee819167d2ac10e"
+  },
+  {
+    "path": "updates/update-79-cacao-full-rewrite-r3-20261007.json",
+    "sourceSha256": "b19d3388fb6ce1c0a17bdf6250e5ca321d800d62b1d19d46a149bf9a2b876420",
+    "renderSha256": "8115817dc72c44dae67ecc830963eb8850bff12b729eb105729d6a387f708de0"
+  }
+]

@@ -1,0 +1,32 @@
+한입 건강 — 질병 독립 프로젝트 입력 지침 I1
+개정일: 2026-10-25
+
+1. 작업 범위
+대상 블로그는 https://nhunnhun.tistory.com/, 이 프로젝트에서 사용하는 유일한 GitHub 저장소는 ansqhd5774-Choi/nhunnhun_disease, 카테고리는 질병다. 다른 저장소의 AGENTS.md·기준·원고·실행 결과를 가져오지 않는다. 공통 저장소로 이동하거나 원고를 전달하지 않는다. 사용자의 요청 키워드를 조사·작성·저장·실행·완료 보고까지 유지하며 다른 주제로 바꾸지 않는다. 범위 밖 주제는 범위 밖이라고 알리고 임의로 다른 주제나 저장소를 선택하지 않는다.
+
+2. 새 대화 시작
+이 저장소 최신 main의 PROJECT_INSTRUCTIONS.txt, AGENTS.md, repository-scope.json, docs/GENERAL_CHAT_EXECUTION.md를 읽는다. SUBTOPIC_STANDARD.md가 있으면 함께 읽는다. 내용·소제목·문체는 이 저장소의 상세 프로젝트 지침을 따르고 실행은 이 저장소 publishing/·authoring/·.github/workflows/만 사용한다. 외부 저장소의 파일을 공통 기준이라는 이유로 조회하지 않는다. 접근 불가 시 다른 저장소로 대체하지 않는다. 사용자 지시와 도구 금지가 최우선이다.
+
+3. 질병 핵심 소주제
+1) 정의와 발병 기전
+2) 주요 원인과 고위험군
+3) 진단 방법과 핵심 검사
+4) 예방법과 도움이 되는 음식 5가지
+5) 표준 치료와 권장 의약품 3가지
+6) 재발 예방을 위한 생활습관 5가지와 추적 관찰 팁
+주제별 답은 해당 분야에 맞게 작성한다. 다른 분야의 소주제를 복사하지 않는다. 질환에 약물 3가지·식품 5가지 등 고정 수량이 부적절하면 근거 없는 항목을 채우지 않는다. 한 달 변화·예방 효과·약효 증강을 보장하지 않는다. 질병·약 정보는 개인별 진단·처방·증감량을 대신하지 않는다.
+
+4. 조사·작성
+공식기관·영양 DB·공식 허가사항·진료지침·원문 연구 중 주제에 맞는 자료를 조사한다. 검색 의도 중복을 확인하고 기존 글이면 숫자 URL과 articleId를 유지한다. 제목이 약속한 질문에 본문이 직접 답하게 한다. 검색량·효능·함량·날짜를 추정해 만들지 않는다. 한국 단위와 실제 기준량을 구분한다. 확인된 특징·역할·이점과 실제 행동을 먼저 설명하며 필요한 안전·금기·응급 행동을 명확히 유지한다. 근거 확인 과정 자체로 본문을 채우지 않는다.
+
+5. 디자인·기술 계약
+기존 승인 디자인·카드·표·목차·이미지·3단계 강조를 유지한다. 세부 HTML·이미지 스키마·강조 하한·분포는 이 저장소 PROJECT_INSTRUCTIONS.txt와 publishing/direct-authoring-contract.mjs·direct-preflight.mjs·image-review.mjs·direct-design.mjs의 로컬 규격을 따른다. 일반적인 부정·근거 한계 문구로 강조 수량을 채우지 않는다. 실제 관련 내부링크와 출처·라이선스·alt가 확인된 사진을 본문과 함께 완성한다. 강조만 수정하는 경우 기존 리스트·표·이미지 구조를 줄이지 않는다.
+
+6. 보존·저장·실행
+완성 JSON 전체를 자동 발행 경로 밖에 먼저 보존한다. GitHub 저장 후 실제 commit의 동일 파일과 digest를 확인한다. 신규 posts/*.json → publish-posts.yml, 기존 수정 updates/direct-*.json → direct-author-update.yml → update-posts.yml로 처리한다. sourceId 한 건을 명시하며 다른 주제의 최근 성공을 가져오지 않는다. 이 저장소의 GitHub 원장만 사용한다. 과거 drafts/·handoffs/는 자동 전달 경로가 아니다.
+
+7. 제출·완료
+실제 제출은 writer-session.mjs와 같은 물리 Windows 호스트의 잠금 안에서만 수행한다. TISTORY_WRITER_HOST와 전용 러너 연결 전에는 활성화됐다고 하지 않는다. 일반 Chat에 사용자 PC의 Node·CMD·gh·Chrome 조작을 요구하지 않는다. 자동 실행과 수동 제출을 중복하지 않는다. submitting 또는 제출 불명확이면 재제출하지 않고 같은 source의 읽기 전용 복구를 사용한다. HTTP200·SUBMIT_CLICKED·Actions SUCCESS만으로 완료라고 하지 않는다. 같은 sourceId·Run·공개 URL과 PUBLIC_VERIFIED 및 published/updated 원장을 확인한 뒤 보고한다.
+
+8. 보호·보고
+TinyFish·Browserbase·Ollama 작성·보안 제한 우회를 사용하지 않는다. 비밀번호·OTP·쿠키·token·인증 헤더를 출력하거나 저장하지 않는다. 기존 원고·원장·URL·articleId와 미커밋 변경을 보존한다. 승인 없는 삭제·강제 push·권한 확대·유료 가입·무관한 스킨·광고 변경을 하지 않는다. 보고는 실제 수행한 변경, 검증 상태, 같은 작업의 실행 링크·공개 URL·원장 상태, 남은 문제만 짧게 작성한다. 구현·테스트·GitHub 반영·러너 연결·공개 검증을 구분한다.

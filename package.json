@@ -1,0 +1,22 @@
+{
+  "name": "nhunnhun-disease-publisher",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/public-title.test.mjs tests/public-body.test.mjs tests/public-verification.test.mjs tests/html-mode.test.mjs tests/image-source-diversity.test.mjs tests/direct-public-color.test.mjs tests/direct-responsive-list-design.test.mjs tests/public-verification-retry.test.mjs tests/update-editor-mode-recovery.test.mjs tests/repository-isolation.test.mjs tests/independent-render-parity.test.mjs",
+    "validate": "node publishing/validate.mjs",
+    "validate:update": "node publishing/validate-update.mjs",
+    "validate:content": "node publishing/validate-content.mjs --all",
+    "validate:content:changed": "node publishing/validate-content.mjs --changed",
+    "publish": "node publishing/writer-session.mjs publish",
+    "update": "node publishing/writer-session.mjs update"
+  },
+  "dependencies": {
+    "playwright-core": "1.63.0",
+    "sanitize-html": "2.18.0",
+    "htmlparser2": "12.0.0"
+  },
+  "devDependencies": {
+    "yaml": "2.9.1"
+  }
+}

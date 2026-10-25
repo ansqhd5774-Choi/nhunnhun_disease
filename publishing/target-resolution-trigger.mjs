@@ -1,0 +1,10 @@
+import {execFileSync} from 'node:child_process';
+import {appendFileSync} from 'node:fs';
+const before=process.env.TARGET_BASE_SHA,head=process.env.TARGET_HEAD_SHA;
+if(!/^[0-9a-f]{40}$/.test(before||'')||!/^[0-9a-f]{40}$/.test(head||''))throw Error('E_TARGET_TRIGGER_RANGE');
+const files=execFileSync('git',['diff','--name-only',before,head,'--','authoring/target-resolution'],{encoding:'utf8'}).split(/\r?\n/).filter(Boolean);
+const ids=files.map(path=>{const match=path.match(/^authoring\/target-resolution\/([a-z0-9][a-z0-9-]{2,79})\.json$/);if(!match)throw Error('E_TARGET_TRIGGER_PATH');return match[1];});
+if(ids.length!==1)throw Error('E_TARGET_TRIGGER_COUNT');
+const output=process.env.GITHUB_OUTPUT;if(!output)throw Error('E_TARGET_TRIGGER_OUTPUT');
+appendFileSync(output,`source_id=${ids[0]}\n`,'utf8');
+console.log('TARGET_RESOLUTION_REQUEST '+ids[0]);

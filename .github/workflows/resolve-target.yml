@@ -1,0 +1,46 @@
+name: Resolve food target before authoring
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - authoring/target-resolution/**
+permissions:
+  contents: write
+concurrency:
+  group: nhunnhun-target-resolution
+  queue: max
+  cancel-in-progress: false
+jobs:
+  resolve:
+    runs-on: [ self-hosted, windows, x64, tistory-disease ]
+    timeout-minutes: 4
+    defaults:
+      run:
+        shell: cmd
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - uses: ./.github/actions/setup-node-pnpm
+        with:
+          enable-cache: false
+      - name: Select one target request
+        id: target
+        run: node publishing/target-resolution-trigger.mjs
+        env:
+          TARGET_BASE_SHA: ${{ github.event.before }}
+          TARGET_HEAD_SHA: ${{ github.sha }}
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: Runner evidence and source drift Gate A
+        run: node publishing/runner-gate.mjs --queue
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: call maintenance\check-tistory-chrome.cmd
+      - name: Tistory 로그인 세션 사전 확인 — 읽기 전용
+        run: node publishing/auth-preflight.mjs
+      - name: 관리자 전체 글에서 신규·기존 판정 — 읽기 전용
+        run: node publishing/resolve-target-readonly.mjs
+        env:
+          TARGET_SOURCE_ID: ${{ steps.target.outputs.source_id }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,46 @@
+name: Verify existing publication without resubmission
+on:
+  workflow_dispatch:
+    inputs:
+      source_id:
+        required: true
+        type: string
+      public_url:
+        required: true
+        type: string
+  push:
+    branches: [main]
+    paths:
+      - automation/recover-publication-request.json
+permissions:
+  contents: write
+concurrency:
+  group: nhunnhun-tistory-mutation
+  queue: max
+  cancel-in-progress: false
+jobs:
+  verify:
+    if: github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, windows, x64, tistory-disease]
+    timeout-minutes: 12
+    defaults:
+      run:
+        shell: cmd
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/setup-node-pnpm
+        with:
+          enable-cache: false
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: Resolve verification-only recovery inputs
+        id: recovery-inputs
+        run: node publishing/recovery-inputs.mjs
+        env:
+          DISPATCH_SOURCE_ID: ${{ inputs.source_id }}
+          DISPATCH_PUBLIC_URL: ${{ inputs.public_url }}
+          RECOVERY_REQUEST_FILE: automation/recover-publication-request.json
+      - run: node publishing/recover-publication.mjs
+        env:
+          PUBLISH_SOURCE_ID: ${{ steps.recovery-inputs.outputs.source_id }}
+          RECOVERY_PUBLIC_URL: ${{ steps.recovery-inputs.outputs.public_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

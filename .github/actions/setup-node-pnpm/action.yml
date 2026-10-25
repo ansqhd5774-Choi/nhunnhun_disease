@@ -1,0 +1,36 @@
+name: Setup Node and pnpm cache
+description: Shared Node 24 setup with optional GitHub-hosted pnpm store cache.
+inputs:
+  enable-cache:
+    description: Enable actions/cache for ephemeral GitHub-hosted runners.
+    required: false
+    default: 'false'
+  cache-key:
+    description: OS-scoped pnpm store cache key.
+    required: false
+    default: ''
+  cache-restore-key:
+    description: OS-scoped pnpm store restore prefix.
+    required: false
+    default: ''
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v5
+      with:
+        node-version: '24'
+    - uses: actions/cache@v4
+      if: ${{ inputs.enable-cache == 'true' }}
+      with:
+        path: |
+          ~/.local/share/pnpm/store
+          ~/AppData/Local/pnpm/store
+          ~/.pnpm-store
+        key: ${{ inputs.cache-key }}
+        restore-keys: |
+          ${{ inputs.cache-restore-key }}
+    - name: Ensure pnpm 11.19.0
+      uses: pnpm/action-setup@v4
+      with:
+        version: 11.19.0
+        run_install: false
