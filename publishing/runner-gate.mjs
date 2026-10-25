@@ -1,7 +1,7 @@
 import { execFileSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 
-export const RUNNER_LABELS = ['self-hosted', 'windows', 'x64', 'tistory-publisher'];
+export const RUNNER_LABELS = ['self-hosted', 'windows', 'x64', 'tistory-disease'];
 const SOURCE_ID_RE='([a-z0-9][a-z0-9-]{2,79})';
 function sourceOwnedArtifactId(path){
   const standard=path.match(new RegExp('^(?:posts|updates|content-reviews/(?:posts|updates)|publishing/(?:state|update-state)|authoring/(?:target-resolution|target-resolution-results))/'+SOURCE_ID_RE+'\\.json$'));

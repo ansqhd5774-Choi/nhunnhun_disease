@@ -125,7 +125,7 @@ export async function runTargetResolutionGate({root=process.cwd(),sourceId=proce
     page=await connection.context.newPage();
     await page.goto(`${BLOG}/manage/posts`,{waitUntil:'domcontentloaded',timeout:30000});
     await assertTistoryAuthenticated(page);
-    // Non-food direct sources have no alias identity file, so their runtime gate only checks exact-title duplicates.
+    // Legacy non-direct sources retain the exact-title fallback; scoped direct sources require local identity evidence.
     // Use Tistory's title search for the same exact-title decision instead of scanning up to 100 manager pages.
     const items=identity
       ? await fetchManagedPosts(page)

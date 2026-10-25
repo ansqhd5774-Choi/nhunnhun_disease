@@ -1,0 +1,15 @@
+{
+  "status": "RUNTIME_READINESS_PASS",
+  "key": "disease",
+  "repository": "ansqhd5774-Choi/nhunnhun_disease",
+  "category": "질병",
+  "runId": 40181013747,
+  "runUrl": "https://github.com/ansqhd5774-Choi/nhunnhun_disease/actions/runs/40181013747",
+  "sourceCommit": "c5d0e1a7882cbb6810a8a056481d733f187c6818",
+  "host": "DESKTOP-N62L0NG",
+  "lockAcquired": true,
+  "chromeReady": true,
+  "publicationAttempted": false,
+  "publishEnabled": true,
+  "articleSubmissionVerified": false
+}

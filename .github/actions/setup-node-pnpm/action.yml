@@ -1,5 +1,5 @@
 name: Setup Node and pnpm cache
-description: Shared Node 24 setup with optional GitHub-hosted pnpm store cache.
+description: Repository-local Node 24 setup with isolated per-job pnpm installation.
 inputs:
   enable-cache:
     description: Enable actions/cache for ephemeral GitHub-hosted runners.

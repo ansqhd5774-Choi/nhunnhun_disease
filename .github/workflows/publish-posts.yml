@@ -67,8 +67,10 @@ jobs:
         env:
           CONTENT_BASE_SHA: ${{ github.event.before }}
           CONTENT_HEAD_SHA: ${{ github.sha }}
-      - run: pnpm run validate:content
+      - run: node publishing/validate-selected-content.mjs posts
         if: steps.mutation-gate.outputs.should_mutate == 'true' && github.event_name == 'workflow_dispatch'
+        env:
+          PUBLISH_SOURCE_ID: ${{ steps.mutation-gate.outputs.source_id }}
       - name: Revalidate publish source at mutation boundary
         if: steps.mutation-gate.outputs.should_mutate == 'true'
         run: pnpm validate
