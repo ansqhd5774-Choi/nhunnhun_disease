@@ -1,0 +1,16 @@
+name: Repository isolation contract
+on:
+  push:
+    branches: [main]
+    paths: ['publishing/**','authoring/**','repository-scope.json','tests/**','.github/workflows/**','package.json']
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  scope:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/setup-node-pnpm
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - run: pnpm test

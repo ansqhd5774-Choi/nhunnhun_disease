@@ -1,0 +1,44 @@
+name: GPT 직접 작성 원고 수정 요청 전달
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'updates/direct-*.json'
+      - 'automation/update-retry/direct-*.txt'
+  workflow_dispatch:
+    inputs:
+      source_id:
+        description: 'GPT가 준비한 updates/direct-*.json ID'
+        required: true
+        type: string
+permissions:
+  contents: read
+  actions: write
+concurrency:
+  group: nhunnhun-direct-source-dispatch-${{ github.ref }}
+  queue: max
+  cancel-in-progress: false
+jobs:
+  dispatch:
+    runs-on: windows-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        shell: cmd
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: ./.github/actions/setup-node-pnpm
+        with:
+          enable-cache: 'true'
+          cache-key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
+          cache-restore-key: ${{ runner.os }}-pnpm-store-
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: 준비된 원고 연결 — AI 호출 없음
+        run: node authoring/direct-dispatch.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SOURCE_COMMIT: ${{ github.sha }}
+          SOURCE_ID: ${{ inputs.source_id }}

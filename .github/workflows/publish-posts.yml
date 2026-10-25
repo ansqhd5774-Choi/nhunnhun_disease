@@ -1,0 +1,129 @@
+name: Validate and publish Tistory posts
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - posts/**
+      - automation/publish-retry-request.txt
+      - .github/workflows/publish-posts.yml
+  workflow_dispatch:
+    inputs:
+      source_id:
+        description: '신규 발행할 posts JSON ID (빈 값은 기존 동작)'
+        required: false
+        type: string
+      publish:
+        description: 'Actually publish one pending post'
+        required: false
+        default: false
+        type: boolean
+permissions:
+  contents: read
+env:
+  PUBLISH_SOURCE_ID: ${{ inputs.source_id }}
+concurrency:
+  group: nhunnhun-validation-${{ github.sha }}
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: cmd
+    outputs:
+      should_publish: ${{ steps.mutation-gate.outputs.should_mutate }}
+      source_id: ${{ steps.mutation-gate.outputs.source_id }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Mutation gate
+        id: mutation-gate
+        run: node publishing/mutation-gate.mjs posts
+        env:
+          MUTATION_REQUESTED: ${{ inputs.publish }}
+      - uses: ./.github/actions/setup-node-pnpm
+        if: steps.mutation-gate.outputs.should_mutate == 'true'
+        with:
+          enable-cache: ${{ runner.environment == 'github-hosted' }}
+          cache-key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
+          cache-restore-key: ${{ runner.os }}-pnpm-store-
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+        if: steps.mutation-gate.outputs.should_mutate == 'true'
+      - name: Target resolution proof — fail fast before content validation
+        if: steps.mutation-gate.outputs.should_mutate == 'true'
+        run: node publishing/target-resolution-proof.mjs
+        env:
+          PUBLISH_SOURCE_ID: ${{ steps.mutation-gate.outputs.source_id }}
+      - name: Diagnose self-hosted allocation
+        if: steps.mutation-gate.outputs.should_mutate == 'true'
+        run: node publishing/runner-gate.mjs --queue
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Content standard for changed source
+        if: steps.mutation-gate.outputs.should_mutate == 'true' && github.event_name == 'push'
+        run: pnpm run validate:content:changed
+        env:
+          CONTENT_BASE_SHA: ${{ github.event.before }}
+          CONTENT_HEAD_SHA: ${{ github.sha }}
+      - run: pnpm run validate:content
+        if: steps.mutation-gate.outputs.should_mutate == 'true' && github.event_name == 'workflow_dispatch'
+      - name: Revalidate publish source at mutation boundary
+        if: steps.mutation-gate.outputs.should_mutate == 'true'
+        run: pnpm validate
+        env:
+          PUBLISH_SOURCE_ID: ${{ steps.mutation-gate.outputs.source_id }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ansqhd5774-Choi/nhunnhun_disease
+      - name: 선택 원고 준비와 강조 현황 — 검증 결과 재사용
+        if: steps.mutation-gate.outputs.should_mutate == 'true'
+        run: node authoring/prepare-selected-source.mjs posts
+        env:
+          PUBLISH_SOURCE_ID: ${{ steps.mutation-gate.outputs.source_id }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AUTHORITATIVE_PREFLIGHT_SHA: ${{ github.sha }}
+  publish:
+    env:
+      PUBLISH_SOURCE_ID: ${{ needs.validate.outputs.source_id }}
+    concurrency:
+      group: nhunnhun-tistory-mutation
+      queue: max
+      cancel-in-progress: false
+    needs: validate
+    if: vars.TISTORY_PUBLISH_ENABLED == 'true' && github.ref == 'refs/heads/main' &&
+      needs.validate.outputs.should_publish == 'true'
+    runs-on: [ self-hosted, windows, x64, tistory-disease ]
+    defaults:
+      run:
+        shell: cmd
+    timeout-minutes: 12
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.sha }}
+      - uses: ./.github/actions/setup-node-pnpm
+        with:
+          enable-cache: ${{ runner.environment == 'github-hosted' }}
+          cache-key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
+          cache-restore-key: ${{ runner.os }}-pnpm-store-
+      - name: Runner evidence and source drift Gate A
+        run: node publishing/runner-gate.mjs
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: Legacy validation marker — disabled, hosted validation is authoritative
+        if: ${{ false }}
+        run: pnpm validate
+      - run: call maintenance\check-tistory-chrome.cmd
+      - name: Tistory 로그인 세션 사전 확인 — 읽기 전용
+        run: node publishing/auth-preflight.mjs
+      - name: 신규·기존 대상 식별 — 관리자 목록 읽기 전용
+        run: node publishing/target-resolution-gate.mjs
+      - name: 신규 글 단일 제출·공개 검증
+        run: pnpm run publish
+        env:
+          TISTORY_WRITER_HOST: ${{ vars.TISTORY_WRITER_HOST }}
+          PUBLISH_ENABLED: "true"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AUTHORITATIVE_PREFLIGHT_SHA: ${{ github.sha }}
