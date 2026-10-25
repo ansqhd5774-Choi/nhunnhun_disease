@@ -1,0 +1,26 @@
+{
+  "sourceId": "direct-458-allergic-rhinitis-full-rewrite-r3-20261025",
+  "articleId": "458",
+  "targetUrl": "https://nhunnhun.tistory.com/458",
+  "repository": "ansqhd5774-Choi/nhunnhun_disease",
+  "category": "질병",
+  "fullSourcePath": "evidence/authoring-handoffs/direct-458-allergic-rhinitis-full-rewrite-r3-20261025.json",
+  "sha256": "3d71c8d3ddf98f9c47f609540266963577d34a04ed0b01d1226fcf7ec50f9157",
+  "preservationCommit": "7ff87ae66a103bdd1aa094322b0a4c1ed8fbce61",
+  "sourceStatus": "PRESERVED_NOT_SUBMITTED",
+  "checks": {
+    "syntax": "PASS",
+    "articleId": "PRESERVED",
+    "headline": "PRESERVED",
+    "coreSections": 6,
+    "images": 6,
+    "mediaAttribution": "CHECKED",
+    "tables": 4,
+    "bold": 94,
+    "highlight": 16,
+    "underline": 5,
+    "citations": "CHECKED",
+    "htmlTags": "BALANCED"
+  },
+  "publicationStatus": "NOT_YET_VERIFIED"
+}
