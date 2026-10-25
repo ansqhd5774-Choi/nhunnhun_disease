@@ -1,3 +1,4 @@
+import {RUNNER_LABELS} from '../publishing/runner-gate.mjs';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp,rm,readFile} from 'node:fs/promises';
@@ -27,6 +28,8 @@ test('workflow entry points use host-locked package scripts and self repository'
   const pkg=JSON.parse(readFileSync('package.json','utf8'));
   for(const [name,job,command] of [['publish-posts.yml','publish','publish'],['update-posts.yml','update','update']]){
     const workflow=YAML.parse(readFileSync('.github/workflows/'+name,'utf8'));
+    const actualLabels=workflow.jobs[job]['runs-on'].map(s=>s.toLowerCase());
+    for(const label of RUNNER_LABELS)assert.ok(actualLabels.includes(label.toLowerCase()));
     const step=workflow.jobs[job].steps.find(s=>s.run==='pnpm run '+command);
     assert.ok(step,command);
     assert.equal(step.env.TISTORY_WRITER_HOST,'${{ vars.TISTORY_WRITER_HOST }}');
@@ -64,4 +67,15 @@ test('parallel runner package managers never share a home installation directory
   assert.match(setup.with.dest,/github\.run_id/);
   assert.match(setup.with.dest,/github\.job/);
   assert.match(setup.with.dest,/github\.run_attempt/);
+});
+
+test('manual new-post validation never scans unrelated manuscripts',()=>{
+ const w=YAML.parse(readFileSync('.github/workflows/publish-posts.yml','utf8'));
+ const selected=w.jobs.validate.steps.find(s=>s.run==='node publishing/validate-selected-content.mjs posts');
+ assert.ok(selected);
+ assert.equal(selected.env.PUBLISH_SOURCE_ID,'${{ steps.mutation-gate.outputs.source_id }}');
+ assert.equal(w.jobs.validate.steps.some(s=>s.run==='pnpm run validate:content'),false);
+ const cli=readFileSync('publishing/validate-selected-content.mjs','utf8');
+ assert.match(cli,/assertSelectedSource\(kind,id\)/);
+ assert.match(cli,/runContentCli\(\['--check'/);
 });

@@ -1,34 +1,39 @@
-# 저장소 독립화 상태 — 2026-10-25
+# 질병 저장소 독립화 — 전환 완료 기록
 
-## 구현
-- 소유 저장소: ansqhd5774-Choi/nhunnhun_disease; 허용 카테고리: 질병.
-- 원고·프로젝트 지침·기술 코드·workflow·원장은 로컬 저장소에서 처리한다. 외부 저장소 dispatch나 원고 수신은 없다.
-- 기술 코드는 원래 runtime commit f1c381b5d4314dc46552abdfda39fd3e3955ef84에서 복제했다. 기존 강조·디자인·이미지·공개 검증은 유지하며 편집 내용과 소제목은 해당 저장소 기존 기준을 유지했다.
-- legacy R1 다분야 모듈은 기술 호환성 자료일 뿐 편집 기준이 아니다. 제출은 해당 카테고리 direct/SP1 한 건만 허용한다.
-- 신규 대상 중복 판정도 해당 저장소 안의 target-resolution 요청/결과를 사용한다.
+기준일: 2026-10-25. 대상: ansqhd5774-Choi/nhunnhun_disease. 이 문서는 구현·운영 준비 검증과 실제 글 발행을 구분한다.
 
-## 운영 연결 — 아직 미완료
-- 새 저장소용 self-hosted 러너 연결은 현재 수행하지 않았다. 신형 PC를 변경하지 않았다.
-- 같은 물리 Windows 호스트에 저장소별 러너를 등록해야 한다. tistory-disease 라벨을 사용한다. 각 러너는 작업 폴더를 분리하되 같은 Windows 사용자·Chrome 프로필·ProgramData 잠금을 사용해야 한다.
-- 모든 저장소의 TISTORY_WRITER_HOST 변수는 동일한 실제 hostname이어야 한다. 다른 호스트 실행은 지원하지 않는다. 값이 없거나 불일치하면 제출 전에 차단한다. 임의 hostname·잠금 우회 금지.
-- 기본 GITHUB_TOKEN은 해당 저장소에만 사용한다. contents:write 원장 저장, actions:write 동일 저장소 workflow 전달 외 다른 저장소 token/PAT은 불필요하다.
-- TISTORY_PUBLISH_ENABLED=true는 연결·호스트·잠금 검증 후에만 설정한다.
-- ChatGPT 프로젝트별 GitHub 접근 제한은 별도 계정 설정 영역이다. 이 코드 변경으로 연결 권한이 분리됐다고 주장하지 않는다.
+## 반영한 구조
+- 프로젝트 지침·원고·기술 코드·GitHub workflow·원장을 이 저장소 안에서 처리한다. 다른 카테고리 저장소의 기준을 읽거나 원고를 전달하지 않는다.
+- 편집 기준은 PROJECT_INSTRUCTIONS.txt와 SUBTOPIC_STANDARD.md다. 프로젝트 설정에 붙여넣는 PROJECT_PROMPT.txt는 2551자로 8,000자 이하다. 기존 분야별 소제목·내용 기준은 유지했다.
+- 저장소·category·direct/SP1·sourceId를 제출 전에 검사한다. 신규 수동 실행의 콘텐츠 검사도 선택한 원고 한 건만 대상으로 한다.
+- 신규 posts/ → publish-posts.yml. 기존 수정 updates/ → direct-author-update.yml → update-posts.yml. 결과도 동일 sourceId와 이 저장소 원장만 추적한다.
+- 기존 디자인·강조·이미지·PC/모바일 공개 검증 코드는 로컬로 복제했다. 원본 runtime f1c381b5d4314dc46552abdfda39fd3e3955ef84와 해당 카테고리 기술 fixture의 최종 렌더 hash가 같다.
 
-## 이력·전환 보호
-- 과거 원고·원장은 삭제하지 않는다. 신규 저장소에 과거 ready 원고를 한꺼번에 넣지 않는다.
-- 진행 중·submitting 작업은 기존 실행에서 먼저 확정해야 하며 새 저장소로 재제출하지 않는다. 기존 글 새 수정은 새 revision ID와 동일 숫자 URL을 사용한다.
-- 기존 승인 handoff는 자동 재접수하지 않는다. 필요한 원고만 이 저장소 updates/로 명시적으로 접수한다.
-- 잠금은 원자 mkdir로 획득하며 대기 60초 후 busy로 끝난다. 강제 종료 후 잠금은 자동 만료되지 않는다. 운영자가 실제 실행·제출 상태를 확인한 뒤 복구한다.
+## 실제 운영 연결
+- 신형 Windows 호스트에 전용 러너를 연결했고 GitHub에서 online을 확인했다. 세 추가 러너는 관리자 서비스·주기적 watchdog 없이 사용자 로그인 시 숨김 실행한다. 구형 PC 설정은 변경하지 않았다.
+- 네 저장소의 TISTORY_WRITER_HOST를 동일한 실제 호스트로 고정했다. TISTORY_PUBLISH_ENABLED=true를 설정했다.
+- writer-session.mjs가 같은 물리 호스트의 ProgramData 원자 잠금을 사용한다. 다른 호스트는 거절하며 중단된 잠금을 자동 탈취·삭제하지 않는다.
+- 병렬 실행 중 기본 ~/setup-pnpm 디렉터리의 EBUSY를 실제 확인했다. 설치 경로를 runner.temp/run/job/attempt 단위로 분리한 뒤 네 저장소 실행을 다시 성공시켰다.
+- 일회성 러너 등록 비밀값은 삭제했다. 다른 저장소로 전달하는 실행 경로는 사용하지 않는다.
 
-## 검증 범위
-- repository-isolation.test.mjs: 저장소/분야/원고 범위, 호스트 설정, 저장소 간 동시 잠금 거절.
-- 기존 기술 회귀 검사는 tests/에 보존했다. 테스트 결과는 PR에 별도 기록한다.
-- 실제 신규/수정 제출과 공개 end-to-end 검증은 이번 구조 변경 중 실행하지 않았다.
+## 실제 준비 검증 — PASS
+- Run: [40181013747](https://github.com/ansqhd5774-Choi/nhunnhun_disease/actions/runs/40181013747)
+- 실행 source commit: c5d0e1a7882cbb6810a8a056481d733f187c6818
+- 올바른 저장소·분야·호스트, Chrome 구성/로컬 CDP 연결, 실제 호스트 잠금 획득·반환을 확인했다.
+- 편집기 열기·글 제출·재발행은 실행하지 않았다. 이 결과는 로그인 재인증이나 신규 글 공개 end-to-end 성공을 대신하지 않는다.
+- 이후 변경한 선택 원고 검사·러너 라벨 진단·운영 문서는 위 준비 검사에서 확인한 잠금/Chrome 코드를 바꾸지 않았다.
 
-## 이번 로컬 검사 결과
-- 전체 선택 검사: 76개, PASS 76, FAIL 0.
-- 이 저장소에 필요한 기술·격리 검사 전체가 통과했다.
-- 독립 실행·잠금·원고 선택·기존 렌더 출력 스냅샷 검사: PASS. 실제 티스토리 제출은 미실행.
-- 프로젝트 입력용 PROJECT_PROMPT.txt는 2551자로 8,000자 이하다. 상세 편집 지침은 PROJECT_INSTRUCTIONS.txt에 보존했다.
-- 신형 PC 러너 등록·GitHub 프로젝트 연결 권한 분리·운영 활성화는 미완료다.
+## 자동 검사
+- 로컬 전체 선택 검사 78: PASS 78, FAIL 0.
+- 이 저장소의 기술 회귀·독립화·선택 원고 검사 전체 PASS.
+- 격리·동시 잠금·작업별 패키지 경로·선택 원고 범위·렌더 snapshot 검사 PASS.
+
+## 사용자 프로젝트 설정에서 남은 항목
+- ChatGPT의 각 프로젝트 설정에 이 저장소 PROJECT_PROMPT.txt를 붙여넣는다. GitHub 문서를 고친 것이 이미 등록된 ChatGPT 프로젝트 지침을 자동 교체하지는 않는다.
+- GitHub 연결 앱의 프로젝트별 접근 권한은 이번 코드 변경으로 자동 분리되지 않는다. 작성·실행 경로의 독립화와 계정 접근 권한을 구분한다.
+- 같은 Windows 사용자·호스트를 유지한다. 러너를 다른 PC 또는 다른 사용자로 옮길 때는 현재 잠금 모델을 그대로 다중 호스트에 사용하지 않는다.
+
+## 이력 보호와 복구
+- 기존 원고·원장·숫자 URL·articleId는 변경하지 않았다. 예전 ready/submitting 원고를 새 저장소에 한꺼번에 재접수하지 않는다.
+- submitting은 원래 제출 상태를 먼저 확정하고 재제출하지 않는다. 새 수정은 새 revision ID와 같은 기존 URL을 사용한다.
+- 과거 drafts/·handoffs/는 보존 자료이며 현재 자동 제출 경로가 아니다.

@@ -1,4 +1,4 @@
-name: Resolve food target before authoring
+name: Resolve 질병 target before authoring
 on:
   push:
     branches: [ main ]
