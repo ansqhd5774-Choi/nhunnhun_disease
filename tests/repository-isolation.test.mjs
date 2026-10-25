@@ -56,3 +56,12 @@ test('independent repositories cannot acquire the same host lock simultaneously'
     await releaseWriterLock(second);
   } finally {await rm(root,{recursive:true,force:true});}
 });
+
+test('parallel runner package managers never share a home installation directory',()=>{
+  const action=YAML.parse(readFileSync('.github/actions/setup-node-pnpm/action.yml','utf8'));
+  const setup=action.runs.steps.find(s=>s.uses==='pnpm/action-setup@v4');
+  assert.match(setup.with.dest,/runner\.temp/);
+  assert.match(setup.with.dest,/github\.run_id/);
+  assert.match(setup.with.dest,/github\.job/);
+  assert.match(setup.with.dest,/github\.run_attempt/);
+});
