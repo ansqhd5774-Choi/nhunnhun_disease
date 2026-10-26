@@ -1,0 +1,10 @@
+{
+  "sourceId": "direct-dental-caries-20261026",
+  "requestDigest": "1b5e9dd2a382a47e21fe2d4f29b06c632e094eed19f4c6f965acd33b72d207cf",
+  "decision": "new",
+  "scanned": 415,
+  "candidates": [],
+  "resolvedAt": "2026-10-26T15:51:17.925Z",
+  "requestCommit": "761393d6c4d2d05c60862ed0ba8610ea71aec9a0",
+  "runUrl": "https://github.com/ansqhd5774-Choi/nhunnhun_disease/actions/runs/40353203670"
+}
