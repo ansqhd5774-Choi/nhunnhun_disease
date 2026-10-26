@@ -1,9 +1,25 @@
 {
-  "phase": "submitting",
+  "phase": "published",
   "fingerprint": "5c371cd80dbeca8882c61edc4445233037514297711baac0254c53c66978043e",
-  "sourceCommit": "a424b470b4ddbcf6851a6a46f599cb53aba5ddda",
-  "editorialTemplateVersion": "R4",
-  "timestamp": "2026-10-26T10:29:52.224Z",
   "url": "https://nhunnhun.tistory.com/463",
-  "verificationPhase": "public-verification"
+  "editorialTemplateVersion": "SP1",
+  "timestamp": "2026-10-26T10:30:22.766Z",
+  "sourceCommit": "a424b470b4ddbcf6851a6a46f599cb53aba5ddda",
+  "runUrl": "https://github.com/ansqhd5774-Choi/nhunnhun_disease/actions/runs/40307652474",
+  "publicResult": {
+    "status": "PUBLIC_VERIFIED",
+    "sourceId": "direct-adhd-20261026",
+    "url": "https://nhunnhun.tistory.com/463",
+    "checkedAt": "2026-10-26T10:30:22.766Z",
+    "checks": [
+      "title",
+      "body",
+      "images",
+      "representative",
+      "emphasis",
+      "desktop",
+      "mobile"
+    ],
+    "semanticVerification": "not-performed"
+  }
 }
