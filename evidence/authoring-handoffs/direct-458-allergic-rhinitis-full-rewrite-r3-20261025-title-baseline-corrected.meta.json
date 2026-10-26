@@ -1,0 +1,14 @@
+{
+  "sourceId": "direct-458-allergic-rhinitis-full-rewrite-r3-20261025",
+  "articleId": "458",
+  "publicUrl": "https://nhunnhun.tistory.com/458",
+  "changeScope": "baseline-correction-only",
+  "correctedField": "expectedCurrentTitle",
+  "previousExpectedTitle": "알레르기 비염 증상·원인｜감기와 차이·검사·약국약·처방약·면역치료",
+  "correctedExpectedTitle": "알레르기 비염 증상·원인｜자가 확인·감기 차이·약국약 제품사진·치료",
+  "evidence": "Tistory authenticated read-only target probe of Run 40207451506 attempt 2",
+  "bodyOrNewTitleChanged": false,
+  "sha256": "9ce518c9c5d3da16b739a20232cb8d837aca65345523a45c2cae2139bcdb0d98",
+  "preservationCommit": "dd9bc3a2e71d008843307f4086b8baf84bffcdf9",
+  "status": "preserved-not-yet-submitted"
+}
