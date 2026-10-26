@@ -1,0 +1,16 @@
+{
+  "sourceId": "direct-458-allergic-rhinitis-summary-render-r4-20261026",
+  "category": "질병",
+  "articleId": "458",
+  "targetUrl": "https://nhunnhun.tistory.com/458",
+  "changeScope": "content-update",
+  "reason": "Six-card summary renderer did not recognize original blockquote title; changed title trigger only",
+  "changedBodyHtml": "<strong>이 글의 핵심 요약 6가지</strong> -> <strong>이 글의 핵심</strong>",
+  "preservedImages": 6,
+  "preservedTables": 4,
+  "preservedMarkHighlights": 16,
+  "expectedCurrentTitle": "알레르기 비염 증상·원인｜감기와 차이·검사·약국약·처방약·면역치료",
+  "sha256": "c7ebe227ec9bc4999d4456ba644e85a0dce4689f332fd2352e7e9e3826215731",
+  "evidenceCommit": "0a18d524a0c58eaa654b1e39e47ec8212d02bd7c",
+  "status": "preserved-before-automatic-update"
+}
