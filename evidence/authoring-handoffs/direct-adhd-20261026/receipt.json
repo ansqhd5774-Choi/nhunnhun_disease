@@ -1,0 +1,23 @@
+{
+  "sourceId": "direct-adhd-20261026",
+  "articleId": null,
+  "title": "ADHD 증상과 검사 총정리｜어린이·성인 자가 확인, 치료약과 생활관리",
+  "sourceDigest": "343ed4b43515735300cd156dfad1f07cf51f95147906d6eaec4217a9f4073df8",
+  "authorState": "AUTHOR_COMPLETE",
+  "githubState": "NOT_CONFIRMED",
+  "workflowState": "NOT_STARTED",
+  "finalSubmitCount": 0,
+  "preflight": {
+    "status": "PENDING_CI",
+    "checks": {
+      "summary": "AUTHOR_VERIFIED",
+      "emphasis": {
+        "strong": 79,
+        "mark": 15,
+        "underlined": 2
+      },
+      "images": 4,
+      "h2core": 6
+    }
+  }
+}
