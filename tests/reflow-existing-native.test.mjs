@@ -29,4 +29,8 @@ test('validates the real reopening shape: old bare images but no native figures'
   assert.equal(assertLegacyRepairBaseline(plain,spec,[{alt:'Photo 0'},{alt:'Photo 1'},{alt:'Photo 3'}]),true);
   assert.throws(()=>assertLegacyRepairBaseline(original,spec,[{alt:'Photo 0'},{alt:'Photo 1'},{alt:'Photo 3'}]),/E_NATIVE_REFLOW_ORIGINAL_COUNTS/);
   assert.throws(()=>assertLegacyRepairBaseline(plain,spec,[{alt:'Photo 0'},{alt:'wrong'},{alt:'Photo 3'}]),/E_NATIVE_REFLOW_ALT_MISMATCH/);
+  const encoded=plain.replace('alt="Photo 0"','alt="Photo&nbsp;0"');
+  assert.equal(assertLegacyRepairBaseline(encoded,spec,[{alt:'Photo 0'},{alt:'Photo 1'},{alt:'Photo 3'}]),true);
+  const middot=plain.replace('alt="Photo 0"','alt="Photo&middot;0"');
+  assert.equal(assertLegacyRepairBaseline(middot,spec,[{alt:'Photo·0'},{alt:'Photo 1'},{alt:'Photo 3'}]),true);
 });
