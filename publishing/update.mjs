@@ -345,39 +345,32 @@ try{
       }
       stage='stage-content';
       const editorWithAttachments=await captureBasicModeImageFigures(page,imageMap);
+      await selectEditorMode(page,'html');
       const targetHtml=restoreNativeImageFigures(rendered,imageMap,update.representativeImageUrl,editorWithAttachments);
       assertEditorialContract(targetHtml,update.bodyHtml,{version:editorialVersionFor(update)});
+      const cm=page.locator('.CodeMirror:visible');
+      await cm.waitFor({state:'visible'});
       if(update.nativeReflow){
-        // For this opt-in photo repair, try the active rich editor.
-        // CodeMirror edits alone left the old seven-image HTML in Tistory PUT;
-        // the outbound guard still decides whether this alternative is safe.
-        stage='stage-native-rich-editor';
-        const probe=await page.evaluate(html=>{
-          const editor=window.tinymce?.get?.('editor-tistory')||window.tinyMCE?.get?.('editor-tistory');
-          if(!editor||typeof editor.setContent!=='function'||typeof editor.getContent!=='function')return {available:false};
-          editor.setContent(html);
-          editor.fire?.('change');
-          editor.fire?.('input');
-          editor.save?.();
-          const value=editor.getContent();
-          const raw=editor.getContent({format:'raw'});
-          const dom=editor.getBody?.()?.innerHTML||'';
-          return {available:true,length:value.length,images:(value.match(/<img\b/gi)||[]).length,
-            figures:(value.match(/<figure\b/gi)||[]).length,
-            rawImages:(raw.match(/<img\b/gi)||[]).length,
-            rawFigures:(raw.match(/<figure\b/gi)||[]).length,
-            domImages:(dom.match(/<img\b/gi)||[]).length,
-            domFigures:(dom.match(/<figure\b/gi)||[]).length};
-        },targetHtml);
-        if(!probe.available)throw Error('E_NATIVE_REFLOW_RICH_EDITOR_UNAVAILABLE');
-        console.log('UPDATE_NATIVE_RICH_EDITOR_PROBE '+JSON.stringify(probe));
-        if(probe.images!==sources.length||probe.figures!==sources.length)
-          throw Error('E_NATIVE_REFLOW_RICH_EDITOR_SHAPE');
-        console.log('UPDATE_NATIVE_REFLOW_STAGED '+JSON.stringify({...probe,outboundGuard:'required'}));
+        // Preserve the precise source HTML in the visible editor. The final
+        // Tistory PUT may still contain stale content; its opt-in correction
+        // below checks source identity and changes only the content field.
+        stage='stage-native-html';
+        const focused=await cm.evaluate(el=>{
+          const e=el?.CodeMirror;
+          if(!e||typeof e.focus!=='function')return false;
+          e.focus();
+          return e.hasFocus?.()===true;
+        });
+        if(!focused)throw Error('E_UPDATE_CODEMIRROR_NOT_FOCUSED');
+        const oldValue=await cm.evaluate(el=>el.CodeMirror.getValue());
+        await page.keyboard.press('ControlOrMeta+A');
+        const selection=await cm.evaluate(el=>el.CodeMirror.getSelection());
+        if(selection!==oldValue)throw Error('E_UPDATE_CODEMIRROR_SELECT_ALL');
+        await page.keyboard.insertText(targetHtml);
+        const staged=await cm.evaluate(el=>el.CodeMirror.getValue());
+        if(staged!==targetHtml)throw Error('E_UPDATE_CODEMIRROR_STAGE_EXACT');
+        console.log('UPDATE_NATIVE_REFLOW_STAGED '+JSON.stringify({images:sources.length,outboundCorrection:'strict'}));
       } else {
-        await selectEditorMode(page,'html');
-        const cm=page.locator('.CodeMirror:visible');
-        await cm.waitFor({state:'visible'});
         const staged=await cm.evaluate((el,html)=>{
           const editor=el?.CodeMirror;
           if(typeof editor?.setValue!=='function')return null;
@@ -432,7 +425,10 @@ try{
       // Require Tistory's actual outbound content to equal the repaired body.
       // Incorrect outbound requests are aborted before reaching the server.
       const submitGuard=update.nativeReflow
-        ? await installNativeReflowSubmitGuard(page,targetHtml)
+        ? await installNativeReflowSubmitGuard(page,targetHtml,{
+          articleId:update.articleId,targetUrl:update.targetUrl,title:update.title,
+          legacyImages:update.nativeReflow.originalCount,expectedImages:sources.length
+        })
         : null;
 
       await ledger.write(update.id,{
