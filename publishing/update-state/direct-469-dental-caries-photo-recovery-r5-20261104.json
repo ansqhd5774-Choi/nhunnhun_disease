@@ -6,5 +6,16 @@
   "sourceCommit": "9ab4bbe163e28953afee3cb49a96962bcc8a032c",
   "editorialTemplateVersion": "R4",
   "timestamp": "2026-11-03T18:40:32.353Z",
-  "runUrl": "https://github.com/ansqhd5774-Choi/nhunnhun_disease/actions/runs/41695854255"
+  "runUrl": "https://github.com/ansqhd5774-Choi/nhunnhun_disease/actions/runs/41695854255",
+  "publicResult": {
+    "sourceId": "direct-469-dental-caries-photo-recovery-r5-20261104",
+    "url": "https://nhunnhun.tistory.com/469",
+    "sourceCommit": "9ab4bbe163e28953afee3cb49a96962bcc8a032c",
+    "fingerprint": "7065f59c3c8af41e2c7314074288d598d55dafafeb68964289ad0822d527a07c",
+    "runUrl": "https://github.com/ansqhd5774-Choi/nhunnhun_disease/actions/runs/41695854255",
+    "checkedAt": "2026-11-03T18:47:29.210Z",
+    "verificationRunUrl": "https://github.com/ansqhd5774-Choi/nhunnhun_disease/actions/runs/41697066124",
+    "status": "PUBLIC_VERIFICATION_MISMATCH",
+    "code": "E_QA_BODY"
+  }
 }
