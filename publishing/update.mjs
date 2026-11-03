@@ -16,6 +16,7 @@ import { join } from 'node:path';
 import { BLOG } from './core.mjs';
 import { localBrowserConfig, assertLocalGit, openEditorConnection, closeEditorConnection, freshEditorPage, ensureEditorRendering, installLightweightRouting } from './local-browser.mjs';
 import { renderEditorialPost, assertEditorialContract, EDITORIAL_TEMPLATE_VERSION, editorialVersionFor } from './editorial.mjs';
+import {restoreNativeImageFigures} from './native-image-attachments.mjs';
 import { loadUpdates, eligibleUpdate, updateFingerprint } from './update-core.mjs';
 import { UpdateLedger } from './update-ledger.mjs';
 import { assertImageReview } from './image-review.mjs';
@@ -138,21 +139,6 @@ async function uploadImage(page,sourceUrl,index,tempDir){
     throw new Error(code);
   }
 }
-function replaceImageSources(html,mapping,representativeSource){
-  let first=true;
-  return html.replace(/<img\b[^>]*>/gi,tag=>{
-    const match=tag.match(/\bsrc=(["'])(.*?)\1/i);
-    if(!match) return tag;
-    const source=match[2], target=mapping.get(source);
-    if(!target) throw new Error('E_UPDATE_IMAGE_MAPPING');
-    let out=tag.replace(match[0],`src="${target}"`);
-    out=out.replace(/\s(?:loading|decoding|fetchpriority)=(["']).*?\1/gi,'');
-    const priority=source===representativeSource || first;
-    out=out.replace(/>$/,` loading="${priority?'eager':'lazy'}" decoding="async"${priority?' fetchpriority="high"':''}>`);
-    first=false;
-    return out;
-  });
-}
 let editorConnection,editorContext,tempDir,editorPage;
 let stage='configuration';
 try{
@@ -256,10 +242,10 @@ try{
         stage=`image-upload-${i+1}`;
         imageMap.set(sources[i],await uploadImage(page,sources[i],i,tempDir));
       }
-      const targetHtml=replaceImageSources(rendered,imageMap,update.representativeImageUrl);
-
       stage='stage-content';
       await selectEditorMode(page,'html');
+      const editorWithAttachments=await page.locator('.CodeMirror:visible').evaluate(el=>el?.CodeMirror?.getValue?.()||'');
+      const targetHtml=restoreNativeImageFigures(rendered,imageMap,update.representativeImageUrl,editorWithAttachments);
       const code=page.locator('.CodeMirror:visible .CodeMirror-code');
       await code.waitFor({state:'visible'});
       await code.click();
