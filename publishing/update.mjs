@@ -17,6 +17,7 @@ import { BLOG } from './core.mjs';
 import { localBrowserConfig, assertLocalGit, openEditorConnection, closeEditorConnection, freshEditorPage, ensureEditorRendering, installLightweightRouting } from './local-browser.mjs';
 import { renderEditorialPost, assertEditorialContract, EDITORIAL_TEMPLATE_VERSION, editorialVersionFor } from './editorial.mjs';
 import {restoreNativeImageFigures} from './native-image-attachments.mjs';
+import {reflowExistingNative} from './reflow-existing-native.mjs';
 import { loadUpdates, eligibleUpdate, updateFingerprint } from './update-core.mjs';
 import { UpdateLedger } from './update-ledger.mjs';
 import { assertImageReview } from './image-review.mjs';
@@ -331,23 +332,46 @@ try{
       stage='render-update';
       const rendered=renderEditorialPost(update);
       const sources=[...new Set(imageSources(rendered))];
-      const imageMap=new Map();
-      for(let i=0;i<sources.length;i++){
-        stage=`image-upload-${i+1}`;
-        imageMap.set(sources[i],await uploadImage(page,sources[i],i,tempDir));
-        if(i===0)await captureBasicModeImageFigures(page,imageMap);
+      let targetHtml;
+      if(update.nativeReflow){
+        stage='existing-native-reflow';
+        await selectEditorMode(page,'html');
+        targetHtml=reflowExistingNative(rendered,originalHtml,update.nativeReflow,update.representativeImageUrl);
+      }else{
+        const imageMap=new Map();
+        for(let i=0;i<sources.length;i++){
+          stage=`image-upload-${i+1}`;
+          imageMap.set(sources[i],await uploadImage(page,sources[i],i,tempDir));
+          if(i===0)await captureBasicModeImageFigures(page,imageMap);
+        }
+        stage='stage-content';
+        const editorWithAttachments=await captureBasicModeImageFigures(page,imageMap);
+        await selectEditorMode(page,'html');
+        targetHtml=restoreNativeImageFigures(rendered,imageMap,update.representativeImageUrl,editorWithAttachments);
       }
       stage='stage-content';
-      const editorWithAttachments=await captureBasicModeImageFigures(page,imageMap);
-      await selectEditorMode(page,'html');
-      const targetHtml=restoreNativeImageFigures(rendered,imageMap,update.representativeImageUrl,editorWithAttachments);
-      const code=page.locator('.CodeMirror:visible .CodeMirror-code');
-      await code.waitFor({state:'visible'});
-      await code.click();
-      await page.keyboard.press('ControlOrMeta+A');
-      await page.keyboard.insertText(targetHtml);
-      const staged=await page.locator('.CodeMirror:visible').evaluate(el=>el?.CodeMirror?.getValue?.()||'');
+      const cm=page.locator('.CodeMirror:visible');
+      await cm.waitFor({state:'visible'});
+      const staged=await cm.evaluate((el,html)=>{
+        const editor=el?.CodeMirror;
+        if(typeof editor?.setValue!=='function')return null;
+        editor.setValue(html);
+        editor.save?.();
+        return editor.getValue();
+      },targetHtml);
+      if(staged!==targetHtml)throw Error('E_UPDATE_CODEMIRROR_STAGE_EXACT');
       assertEditorialContract(staged,update.bodyHtml,{version:editorialVersionFor(update)});
+      if(update.nativeReflow){
+        // The mode round-trip is a pre-submit proof that Tistory accepted
+        // the editor replacement. Without it, image attachments can be
+        // silently appended while the original broken photos remain.
+        stage='verify-native-reflow-roundtrip';
+        await selectEditorMode(page,'basic');
+        await selectEditorMode(page,'html');
+        const roundTrip=await page.locator('.CodeMirror:visible').evaluate(el=>el?.CodeMirror?.getValue?.()||'');
+        if(roundTrip!==targetHtml)throw Error('E_NATIVE_REFLOW_ROUNDTRIP');
+        console.log('UPDATE_NATIVE_REFLOW_STAGED '+JSON.stringify({images:sources.length,roundTrip:true}));
+      }
 
       stage='publish-editor-ready';
       await preparePublishEditor(page,{title:update.title});
