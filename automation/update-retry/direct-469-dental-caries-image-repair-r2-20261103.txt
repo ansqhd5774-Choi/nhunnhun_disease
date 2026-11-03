@@ -1,5 +1,5 @@
 sourceId=direct-469-dental-caries-image-repair-r2-20261103
 articleId=469
-reason=basic-editor-caret-and-attachment-menu-before-native-figure-capture
-previousRun=41674522632
+reason=focus-native-editor-then-use-original-working-file-input
+previousRun=41675296575
 submissionClicked=false
