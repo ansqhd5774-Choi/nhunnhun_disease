@@ -1,4 +1,5 @@
 import {isNativeTextMaintenance,checkNativeTextSource,nativeTextFingerprint} from './native-text-contract.mjs';
+import {validateNativeReflow} from './reflow-existing-native.mjs';
 import { createHash } from 'node:crypto';
 import { readdir, readFile } from 'node:fs/promises';
 import { BLOG, checkPublishHtml, plainText } from './core.mjs';
@@ -7,7 +8,7 @@ import {isAltMaintenance,checkAltSource,altFingerprint} from './alt-maintenance-
 import {validateAffiliateProducts} from './affiliate-products.mjs';
 import {assertVerifiedFoodStockLeadRemoval} from './food-stock-lead-removal.mjs';
 
-const ALLOWED=['id','articleId','targetUrl','expectedCurrentTitle','title','representativeImageUrl','imageReview','bodyHtml','status','approved','category','contentStandard','affiliateProducts','changeScope','preserveStructure','structureBaseline','foodBenefitScopeReview','stockLeadBaselineId'];
+const ALLOWED=['id','articleId','targetUrl','expectedCurrentTitle','title','representativeImageUrl','imageReview','bodyHtml','status','approved','category','contentStandard','affiliateProducts','changeScope','preserveStructure','structureBaseline','foodBenefitScopeReview','stockLeadBaselineId','nativeReflow'];
 const UPDATE_CHANGE_SCOPES=new Set(['emphasis-only','content-update','full-rewrite','stock-lead-removal']);
 const STRUCTURE_BASELINE_KEYS=['h2','h3','p','div','section','aside','ul','ol','li','table','thead','tbody','tr','th','td','img','figure','figcaption','blockquote','details','summary'];
 const STRUCTURE_BASELINE_REQUIRED_KEYS=['h2','h3','ul','ol','li','table','tr','img','blockquote'];
@@ -23,6 +24,10 @@ export function checkUpdateSource(update, filename){
   if(update.changeScope!==undefined&&!UPDATE_CHANGE_SCOPES.has(update.changeScope))throw new Error('E_UPDATE_CHANGE_SCOPE');
   if((update.stockLeadBaselineId!==undefined)!==(update.changeScope==='stock-lead-removal'))throw Error('E_STOCK_LEAD_SCOPE');
   if(update.preserveStructure!==undefined&&typeof update.preserveStructure!=='boolean')throw new Error('E_UPDATE_PRESERVE_STRUCTURE');
+  if(update.nativeReflow!==undefined){
+    if(update.contentStandard!=='SP1'||update.changeScope!=='content-update')throw Error('E_NATIVE_REFLOW_SCOPE');
+    validateNativeReflow(update.nativeReflow);
+  }
   if(update.structureBaseline!==undefined){
     if(!update.structureBaseline||typeof update.structureBaseline!=='object'||Array.isArray(update.structureBaseline))throw new Error('E_UPDATE_STRUCTURE_BASELINE');
     const keys=Object.keys(update.structureBaseline).sort();
@@ -68,7 +73,8 @@ export function updateFingerprint(update){
     ...(update.stockLeadBaselineId!==undefined ? [update.stockLeadBaselineId] : []),
     ...(update.preserveStructure!==undefined ? [update.preserveStructure] : []),
     ...(update.structureBaseline!==undefined ? [update.structureBaseline] : []),
-    ...(update.foodBenefitScopeReview!==undefined ? [update.foodBenefitScopeReview] : [])
+    ...(update.foodBenefitScopeReview!==undefined ? [update.foodBenefitScopeReview] : []),
+    ...(update.nativeReflow!==undefined ? [update.nativeReflow] : [])
   ])).digest('hex');
 }
 export async function loadUpdates(directory='updates',sourceId=null){
