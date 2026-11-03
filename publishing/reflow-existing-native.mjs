@@ -24,7 +24,11 @@ export function reflowExistingNative(html,originalEditorHtml,spec,representative
   const figures=[...String(originalEditorHtml).matchAll(FIGURE)].map(match=>match[0]).filter(x=>/<img\b/i.test(x));
   const withoutFigures=String(originalEditorHtml).replace(FIGURE,'');
   const originalPhotos=[...withoutFigures.matchAll(IMAGE)].map(match=>match[0]);
-  if(figures.length!==spec.originalCount||originalPhotos.length!==spec.originalCount)throw Error('E_NATIVE_REFLOW_ORIGINAL_COUNTS');
+  if(figures.length!==spec.originalCount||originalPhotos.length!==spec.originalCount){
+    throw Object.assign(Error('E_NATIVE_REFLOW_ORIGINAL_COUNTS'),{
+      details:{nativeFigures:figures.length,bareImages:originalPhotos.length,expected:spec.originalCount}
+    });
+  }
   const sources=[...String(html).matchAll(IMAGE)].map(m=>imageSource(m[0]));
   if(sources.length!==spec.keepIndices.length||sources.some(x=>!x)||new Set(sources).size!==sources.length)throw Error('E_NATIVE_REFLOW_SOURCE_IMAGES');
   const map=new Map();
