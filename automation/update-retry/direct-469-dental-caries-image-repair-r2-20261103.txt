@@ -1,5 +1,5 @@
 sourceId=direct-469-dental-caries-image-repair-r2-20261103
 articleId=469
-reason=Tistory-native-file-chooser-photo-insertion-with-safety-gate
-previousRun=41675797166
+reason=native-photo-picker-proper-jpg-png-file-extensions
+previousRun=41676417528
 submissionClicked=false
