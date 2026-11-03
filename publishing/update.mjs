@@ -27,6 +27,27 @@ import {runAltMaintenance} from './alt-maintenance-runner.mjs';
 import {captureAltBaseline} from './alt-maintenance-public.mjs';
 import {openPublicBrowser} from './local-browser.mjs';
 
+async function focusBasicImageInsertionTarget(page){
+  for(const frame of page.frames()){
+    const editor=frame.locator('[contenteditable="true"]').first();
+    if(await editor.count()&&await editor.isVisible().catch(()=>false)){
+      await editor.focus();
+      await editor.press('ControlOrMeta+End');
+      return;
+    }
+  }
+  const report=[];
+  for(const frame of page.frames()){
+    report.push(await frame.evaluate(()=>({
+      editable:document.querySelectorAll('[contenteditable]').length,
+      iframe:document.querySelectorAll('iframe').length,
+      bodyEditable:document.body?.getAttribute('contenteditable')??null
+    })).catch(()=>({unavailable:true})));
+  }
+  console.log('UPDATE_BASIC_IMAGE_TARGET_PROBE '+JSON.stringify(report));
+  throw new Error('E_UPDATE_IMAGE_EDITOR_FOCUS');
+}
+
 async function captureBasicModeImageFigures(page,imageMap){
   const paths=[...imageMap.values()].map(url=>new URL(url).pathname);
   let last={frames:0,figures:0,matched:0};
@@ -104,6 +125,21 @@ async function uploadImage(page,sourceUrl,index,tempDir){
   let step='download';
   try{
     await downloadImage(sourceUrl,path);
+    step='editor-focus';
+    await focusBasicImageInsertionTarget(page);
+    step='attach-menu';
+    const menu=page.locator('div[aria-label="첨부"] button:visible, #attach-layer-btn:visible').first();
+    if(await menu.count())await menu.click({timeout:10000});
+    else{
+      const clicked=await page.evaluate(()=>{
+        const trigger=document.querySelector('#attach-layer-btn')||
+          document.querySelector('div[aria-label="첨부"] button');
+        if(!trigger)return false;
+        trigger.click();
+        return true;
+      });
+      if(!clicked)throw new Error('E_UPDATE_IMAGE_ATTACH_BUTTON');
+    }
     step='input-probe';
     const input=page.locator('#attach-image');
     const inputCount=await input.count();
@@ -153,6 +189,8 @@ async function uploadImage(page,sourceUrl,index,tempDir){
     if(/^E_UPDATE_IMAGE_/.test(String(error?.message||''))) throw error;
     const code={
       download:'E_UPDATE_IMAGE_DOWNLOAD_UNEXPECTED',
+      'editor-focus':'E_UPDATE_IMAGE_EDITOR_FOCUS',
+      'attach-menu':'E_UPDATE_IMAGE_ATTACH_BUTTON',
       'input-probe':'E_UPDATE_IMAGE_INPUT_PROBE',
       'attach-button':'E_UPDATE_IMAGE_ATTACH_BUTTON',
       'input-attach-wait':'E_UPDATE_IMAGE_INPUT_ATTACH_WAIT',
@@ -268,6 +306,7 @@ try{
       for(let i=0;i<sources.length;i++){
         stage=`image-upload-${i+1}`;
         imageMap.set(sources[i],await uploadImage(page,sources[i],i,tempDir));
+        if(i===0)await captureBasicModeImageFigures(page,imageMap);
       }
       stage='stage-content';
       const editorWithAttachments=await captureBasicModeImageFigures(page,imageMap);
