@@ -15,6 +15,8 @@ test('outbound guard accepts exact JSON and form data HTML only',()=>{
 test('outbound guard recognizes only Tistory writer posts, excluding image attachment',()=>{
   assert.equal(isTistoryWriterPost('https://nhunnhun.tistory.com/manage/post.json','POST'),true);
   assert.equal(isTistoryWriterPost('https://www.tistory.com/manage/post.json','POST'),true);
+  assert.equal(isTistoryWriterPost('https://nhunnhun.tistory.com/manage/post/469.json','PUT'),true);
+  assert.equal(isTistoryWriterPost('https://nhunnhun.tistory.com/manage/post/469.json','PATCH'),true);
   assert.equal(isTistoryWriterPost('https://nhunnhun.tistory.com/manage/post/attach.json','POST'),false);
   assert.equal(isTistoryWriterPost('https://nhunnhun.tistory.com/manage/post.json','GET'),false);
   assert.equal(isTistoryWriterPost('https://unrelated.example/manage/post.json','POST'),false);
