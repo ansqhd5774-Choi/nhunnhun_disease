@@ -360,10 +360,17 @@ try{
           editor.fire?.('input');
           editor.save?.();
           const value=editor.getContent();
+          const raw=editor.getContent({format:'raw'});
+          const dom=editor.getBody?.()?.innerHTML||'';
           return {available:true,length:value.length,images:(value.match(/<img\b/gi)||[]).length,
-            figures:(value.match(/<figure\b/gi)||[]).length};
+            figures:(value.match(/<figure\b/gi)||[]).length,
+            rawImages:(raw.match(/<img\b/gi)||[]).length,
+            rawFigures:(raw.match(/<figure\b/gi)||[]).length,
+            domImages:(dom.match(/<img\b/gi)||[]).length,
+            domFigures:(dom.match(/<figure\b/gi)||[]).length};
         },targetHtml);
         if(!probe.available)throw Error('E_NATIVE_REFLOW_RICH_EDITOR_UNAVAILABLE');
+        console.log('UPDATE_NATIVE_RICH_EDITOR_PROBE '+JSON.stringify(probe));
         if(probe.images!==sources.length||probe.figures!==sources.length)
           throw Error('E_NATIVE_REFLOW_RICH_EDITOR_SHAPE');
         console.log('UPDATE_NATIVE_REFLOW_STAGED '+JSON.stringify({...probe,outboundGuard:'required'}));
