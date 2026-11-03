@@ -137,18 +137,23 @@ async function uploadImage(page,sourceUrl,index,tempDir){
     await downloadImage(sourceUrl,path);
     step='editor-focus';
     await focusBasicImageInsertionTarget(page);
+    step='attach-menu';
+    const menu=page.locator('div[aria-label="첨부"] button:visible, #attach-layer-btn:visible').first();
+    if(await menu.count())await menu.click({timeout:10000});
+    else{
+      const opened=await page.evaluate(()=>{
+        const trigger=document.querySelector('#attach-layer-btn')||
+          document.querySelector('div[aria-label="첨부"] button');
+        if(!trigger)return false;
+        trigger.click();
+        return true;
+      });
+      if(!opened)throw new Error('E_UPDATE_IMAGE_ATTACH_BUTTON');
+    }
     step='input-probe';
     const input=page.locator('#attach-image');
     const inputCount=await input.count();
     if(inputCount===0){
-      step='attach-button';
-      const opened=await page.evaluate(()=>{
-        const button=document.querySelectorAll('#attach-layer-btn')[0];
-        if(!button) return false;
-        button.click();
-        return true;
-      });
-      if(!opened) throw new Error('E_UPDATE_IMAGE_ATTACH_BUTTON');
       step='input-attach-wait';
       await input.waitFor({state:'attached',timeout:10000});
     }
@@ -156,10 +161,31 @@ async function uploadImage(page,sourceUrl,index,tempDir){
     const responsePromise=page.waitForResponse(res=>
       res.url().includes('/manage/post/attach.json') &&
       res.request().method()==='POST'
-    ,{timeout:30000});
+    ,{timeout:30000}).catch(()=>null);
     step='set-input';
     try{
-      await input.setInputFiles(path);
+      const pickerTypes=await input.evaluateAll(nodes=>nodes.map(node=>({
+        tag:node.tagName.toLowerCase(),
+        type:node.getAttribute('type'),
+        visible:!!node.getClientRects().length
+      })));
+      console.log('UPDATE_NATIVE_PICKER_STRUCTURE '+JSON.stringify(pickerTypes));
+      const visiblePicker=page.locator('#attach-image:visible').first();
+      let set=false;
+      if(await visiblePicker.count()){
+        const chooserPromise=page.waitForEvent('filechooser',{timeout:8000}).catch(()=>null);
+        await visiblePicker.click({timeout:8000});
+        const chooser=await chooserPromise;
+        if(chooser){
+          await chooser.setFiles(path);
+          set=true;
+        }
+      }
+      if(!set){
+        const actualFileInput=page.locator('#attach-image[type="file"]').first();
+        if(!await actualFileInput.count())throw Error('E_UPDATE_IMAGE_INPUT');
+        await actualFileInput.setInputFiles(path);
+      }
     }catch{
       throw new Error('E_UPDATE_IMAGE_INPUT');
     }
@@ -187,6 +213,7 @@ async function uploadImage(page,sourceUrl,index,tempDir){
     const code={
       download:'E_UPDATE_IMAGE_DOWNLOAD_UNEXPECTED',
       'editor-focus':'E_UPDATE_IMAGE_EDITOR_FOCUS',
+      'attach-menu':'E_UPDATE_IMAGE_ATTACH_BUTTON',
       'input-probe':'E_UPDATE_IMAGE_INPUT_PROBE',
       'attach-button':'E_UPDATE_IMAGE_ATTACH_BUTTON',
       'input-attach-wait':'E_UPDATE_IMAGE_INPUT_ATTACH_WAIT',
