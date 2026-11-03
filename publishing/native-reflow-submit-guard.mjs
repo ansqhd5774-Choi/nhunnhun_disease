@@ -32,7 +32,24 @@ export function isTistoryWriterPost(requestUrl,method) {
   let url;
   try {url=new URL(requestUrl);} catch {return false;}
   return (url.hostname==='tistory.com'||url.hostname.endsWith('.tistory.com'))
-    && !url.pathname.endsWith('/manage/post/attach.json');
+    && /^\/manage\/post(?:\.json|\/\d+\.json)$/.test(url.pathname);
+}
+
+// Safe diagnostics: names and lengths only, never request values, image URLs,
+// auth headers, or HTML. A rejected writer payload remains blocked.
+export function safeOutboundShape(postData,contentType,requestUrl,method) {
+  const shape={method,path:new URL(requestUrl).pathname,
+    contentType:String(contentType).split(';')[0],bytes:String(postData||'').length};
+  try {
+    if(/json/i.test(contentType)||String(postData||'').trimStart().startsWith('{')) {
+      const payload=JSON.parse(postData);
+      shape.keys=Object.keys(payload||{}).slice(0,24);
+      shape.postKeys=Object.keys(payload?.post||{}).slice(0,24);
+    } else if(/urlencoded/i.test(contentType)) {
+      shape.keys=[...new URLSearchParams(postData).keys()].slice(0,24);
+    } else shape.format='other';
+  } catch {shape.format='unparseable';}
+  return shape;
 }
 
 // Install immediately before final submit, after photo and thumbnail uploads.
@@ -58,6 +75,9 @@ export async function installNativeReflowSubmitGuard(page,expectedHtml) {
       await route.continue();
     } catch(error) {
       failure=error.message;
+      console.log('UPDATE_NATIVE_REFLOW_GUARD_BLOCKED '+JSON.stringify(
+        safeOutboundShape(request.postData(),request.headers()['content-type']??'',request.url(),request.method())
+      ));
       resolveObserved();
       await route.abort('blockedbyclient');
     }
