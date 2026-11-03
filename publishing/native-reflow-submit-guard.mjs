@@ -65,10 +65,34 @@ export function safeOutboundShape(postData,contentType,requestUrl,method,expecte
   return shape;
 }
 
+// Edit only the article content of the exact UI-generated existing-post PUT.
+// The editor has repeatedly sent the preserved seven-image body despite
+// displaying the approved six native figures. All other request fields stay
+// byte-for-byte equivalent as JSON values, and unexpected shapes fail closed.
+export function correctVerifiedPhotoRequest(postData,contentType,expectedHtml,requestUrl,method,options) {
+  if(!/json/i.test(contentType)||method!=='PUT')throw Error('E_NATIVE_REFLOW_OUTBOUND_PATCH_METHOD');
+  const actualUrl=new URL(requestUrl),publicUrl=new URL(options.targetUrl);
+  if(actualUrl.host!==publicUrl.host||actualUrl.pathname!==`/manage/post/${options.articleId}.json`)
+    throw Error('E_NATIVE_REFLOW_OUTBOUND_PATCH_TARGET');
+  let payload;
+  try {payload=JSON.parse(postData);}catch{throw Error('E_NATIVE_REFLOW_OUTBOUND_PATCH_SCHEMA');}
+  if(!payload||Array.isArray(payload)||typeof payload!=='object'
+    ||String(payload.id)!==String(options.articleId)||payload.title!==options.title
+    ||typeof payload.content!=='string'||!Array.isArray(payload.attachments))
+    throw Error('E_NATIVE_REFLOW_OUTBOUND_PATCH_SCHEMA');
+  const old=htmlStructure(payload.content),next=htmlStructure(expectedHtml);
+  const n=options.expectedImages;
+  if(!Number.isInteger(n)||n<3||old.images!==options.legacyImages||old.figures!==0
+    ||next.images!==n||next.figures!==n||next.sections!==1||next.headings!==old.headings
+    ||!/(?:data-ke-type|data-origin-width|imageblock|data-phocus)/.test(expectedHtml))
+    throw Error('E_NATIVE_REFLOW_OUTBOUND_PATCH_SHAPE');
+  return JSON.stringify({...payload,content:expectedHtml});
+}
+
 // Install immediately before final submit, after photo and thumbnail uploads.
 // All editor-origin mutation requests to Tistory then require the intended document.
 // An unexpected backend request is blocked, not guessed to be safe.
-export async function installNativeReflowSubmitGuard(page,expectedHtml) {
+export async function installNativeReflowSubmitGuard(page,expectedHtml,correction=null) {
   let observed=false;
   let approved=false;
   let failure=null;
@@ -82,10 +106,22 @@ export async function installNativeReflowSubmitGuard(page,expectedHtml) {
     }
     observed=true;
     try {
-      assertNativeReflowOutbound(request.postData(),request.headers()['content-type']??'',expectedHtml);
+      const contentType=request.headers()['content-type']??'';
+      let patched=null;
+      if(extractSubmittedHtml(request.postData(),contentType)!==expectedHtml&&correction) {
+        patched=correctVerifiedPhotoRequest(request.postData(),contentType,expectedHtml,request.url(),request.method(),correction);
+      } else {
+        assertNativeReflowOutbound(request.postData(),contentType,expectedHtml);
+      }
       approved=true;
       resolveObserved();
-      await route.continue();
+      if(patched!==null) {
+        console.log('UPDATE_NATIVE_REFLOW_OUTBOUND_CORRECTED '+JSON.stringify({
+          before:htmlStructure(extractSubmittedHtml(request.postData(),contentType)),
+          after:htmlStructure(expectedHtml),only:'content',method:request.method()
+        }));
+        await route.continue({postData:patched});
+      } else await route.continue();
     } catch(error) {
       failure=error.message;
       console.log('UPDATE_NATIVE_REFLOW_GUARD_BLOCKED '+JSON.stringify(
