@@ -18,6 +18,7 @@ import { localBrowserConfig, assertLocalGit, openEditorConnection, closeEditorCo
 import { renderEditorialPost, assertEditorialContract, EDITORIAL_TEMPLATE_VERSION, editorialVersionFor } from './editorial.mjs';
 import {restoreNativeImageFigures} from './native-image-attachments.mjs';
 import {assertLegacyRepairBaseline} from './reflow-existing-native.mjs';
+import {installNativeReflowSubmitGuard} from './native-reflow-submit-guard.mjs';
 import { loadUpdates, eligibleUpdate, updateFingerprint } from './update-core.mjs';
 import { UpdateLedger } from './update-ledger.mjs';
 import { assertImageReview } from './image-review.mjs';
@@ -349,19 +350,37 @@ try{
       stage='stage-content';
       const cm=page.locator('.CodeMirror:visible');
       await cm.waitFor({state:'visible'});
-      const staged=await cm.evaluate((el,html)=>{
-        const editor=el?.CodeMirror;
-        if(typeof editor?.setValue!=='function')return null;
-        editor.setValue(html);
-        editor.save?.();
-        return editor.getValue();
-      },targetHtml);
+      let staged;
+      if(update.nativeReflow){
+        // Only this opt-in image repair changes the editor insertion path.
+        // CodeMirror.setValue alone did not update Tistory's submit model.
+        const inputReady=await cm.evaluate(el=>{
+          const editor=el?.CodeMirror;
+          if(!editor||typeof editor.focus!=='function')return false;
+          editor.focus();
+          return editor.hasFocus?.()===true;
+        });
+        if(!inputReady)throw Error('E_UPDATE_CODEMIRROR_NOT_FOCUSED');
+        const oldValue=await cm.evaluate(el=>el.CodeMirror.getValue());
+        await page.keyboard.press('ControlOrMeta+A');
+        const selection=await cm.evaluate(el=>el.CodeMirror.getSelection());
+        if(selection!==oldValue)throw Error('E_UPDATE_CODEMIRROR_SELECT_ALL');
+        await page.keyboard.insertText(targetHtml);
+        staged=await cm.evaluate(el=>el.CodeMirror.getValue());
+      } else {
+        staged=await cm.evaluate((el,html)=>{
+          const editor=el?.CodeMirror;
+          if(typeof editor?.setValue!=='function')return null;
+          editor.setValue(html);
+          editor.save?.();
+          return editor.getValue();
+        },targetHtml);
+      }
       if(staged!==targetHtml)throw Error('E_UPDATE_CODEMIRROR_STAGE_EXACT');
       assertEditorialContract(staged,update.bodyHtml,{version:editorialVersionFor(update)});
       if(update.nativeReflow){
-        // The mode round-trip is a pre-submit proof that Tistory accepted
-        // the editor replacement. Without it, image attachments can be
-        // silently appended while the original broken photos remain.
+        // This tests editor retention only. The outbound submit payload must
+        // also be checked; the previous mode round-trip was a false positive.
         stage='verify-native-reflow-roundtrip';
         await selectEditorMode(page,'basic');
         await selectEditorMode(page,'html');
@@ -411,6 +430,12 @@ try{
 
       const sourceCommit = assertCurrentSource();
 
+      // Require Tistory's actual outbound content to equal the repaired body.
+      // Incorrect outbound requests are aborted before reaching the server.
+      const submitGuard=update.nativeReflow
+        ? await installNativeReflowSubmitGuard(page,targetHtml)
+        : null;
+
       await ledger.write(update.id,{
         phase:'submitting',fingerprint,url:update.targetUrl,articleId:update.articleId,
         sourceCommit,editorialTemplateVersion:EDITORIAL_TEMPLATE_VERSION,timestamp:new Date().toISOString(),
@@ -419,6 +444,11 @@ try{
 
       stage='final-submit';
       await submit.click();
+      if(submitGuard){
+        stage='verify-native-reflow-outbound';
+        await submitGuard.assertObserved();
+        console.log('UPDATE_NATIVE_REFLOW_OUTBOUND_VERIFIED');
+      }
       console.log('SUBMIT_CLICKED: '+update.id+' '+update.targetUrl);
       stage='public-verification';
       const publicResult=await finalizeSelectedUpdate(update.id);
@@ -448,4 +478,5 @@ try{
   const finalExitCode=process.exitCode||0;
   setTimeout(()=>process.exit(finalExitCode),0);
 }
+
 
