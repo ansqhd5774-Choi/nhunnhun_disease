@@ -19,6 +19,24 @@ export function validateNativeReflow(spec){
   return true;
 }
 
+// Some posts render uploaded figures publicly even though the edit session
+// reopens with only the original standalone img tags. Guard that exact state,
+// then upload the selected replacement photos afresh in the locked editor.
+export function assertLegacyRepairBaseline(originalEditorHtml,spec,imageReview){
+  validateNativeReflow(spec);
+  const figures=[...String(originalEditorHtml).matchAll(FIGURE)].filter(match=>/<img\b/i.test(match[0]));
+  const bare=[...String(originalEditorHtml).replace(FIGURE,'').matchAll(IMAGE)].map(m=>m[0]);
+  if(figures.length!==0||bare.length!==spec.originalCount){
+    throw Object.assign(Error('E_NATIVE_REFLOW_ORIGINAL_COUNTS'),{details:{nativeFigures:figures.length,bareImages:bare.length,expected:spec.originalCount}});
+  }
+  if(imageReview.length!==spec.keepIndices.length)throw Error('E_NATIVE_REFLOW_EXPECTED_PHOTOS');
+  for(let i=0;i<imageReview.length;i++){
+    const oldAlt=bare[spec.keepIndices[i]].match(/\balt\s*=\s*(["'])(.*?)\1/i)?.[2];
+    if(!oldAlt||oldAlt!==imageReview[i].alt)throw Error('E_NATIVE_REFLOW_ALT_MISMATCH');
+  }
+  return true;
+}
+
 export function reflowExistingNative(html,originalEditorHtml,spec,representativeImageUrl){
   validateNativeReflow(spec);
   const figures=[...String(originalEditorHtml).matchAll(FIGURE)].map(match=>match[0]).filter(x=>/<img\b/i.test(x));
