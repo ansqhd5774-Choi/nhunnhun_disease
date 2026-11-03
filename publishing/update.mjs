@@ -17,7 +17,7 @@ import { BLOG } from './core.mjs';
 import { localBrowserConfig, assertLocalGit, openEditorConnection, closeEditorConnection, freshEditorPage, ensureEditorRendering, installLightweightRouting } from './local-browser.mjs';
 import { renderEditorialPost, assertEditorialContract, EDITORIAL_TEMPLATE_VERSION, editorialVersionFor } from './editorial.mjs';
 import {restoreNativeImageFigures} from './native-image-attachments.mjs';
-import {reflowExistingNative} from './reflow-existing-native.mjs';
+import {assertLegacyRepairBaseline} from './reflow-existing-native.mjs';
 import { loadUpdates, eligibleUpdate, updateFingerprint } from './update-core.mjs';
 import { UpdateLedger } from './update-ledger.mjs';
 import { assertImageReview } from './image-review.mjs';
@@ -332,23 +332,20 @@ try{
       stage='render-update';
       const rendered=renderEditorialPost(update);
       const sources=[...new Set(imageSources(rendered))];
-      let targetHtml;
       if(update.nativeReflow){
-        stage='existing-native-reflow';
-        await selectEditorMode(page,'html');
-        targetHtml=reflowExistingNative(rendered,originalHtml,update.nativeReflow,update.representativeImageUrl);
-      }else{
-        const imageMap=new Map();
-        for(let i=0;i<sources.length;i++){
-          stage=`image-upload-${i+1}`;
-          imageMap.set(sources[i],await uploadImage(page,sources[i],i,tempDir));
-          if(i===0)await captureBasicModeImageFigures(page,imageMap);
-        }
-        stage='stage-content';
-        const editorWithAttachments=await captureBasicModeImageFigures(page,imageMap);
-        await selectEditorMode(page,'html');
-        targetHtml=restoreNativeImageFigures(rendered,imageMap,update.representativeImageUrl,editorWithAttachments);
+        stage='verify-legacy-photo-baseline';
+        assertLegacyRepairBaseline(originalHtml,update.nativeReflow,update.imageReview);
       }
+      const imageMap=new Map();
+      for(let i=0;i<sources.length;i++){
+        stage=`image-upload-${i+1}`;
+        imageMap.set(sources[i],await uploadImage(page,sources[i],i,tempDir));
+        if(i===0)await captureBasicModeImageFigures(page,imageMap);
+      }
+      stage='stage-content';
+      const editorWithAttachments=await captureBasicModeImageFigures(page,imageMap);
+      await selectEditorMode(page,'html');
+      const targetHtml=restoreNativeImageFigures(rendered,imageMap,update.representativeImageUrl,editorWithAttachments);
       stage='stage-content';
       const cm=page.locator('.CodeMirror:visible');
       await cm.waitFor({state:'visible'});
