@@ -379,14 +379,14 @@ try{
       if(staged!==targetHtml)throw Error('E_UPDATE_CODEMIRROR_STAGE_EXACT');
       assertEditorialContract(staged,update.bodyHtml,{version:editorialVersionFor(update)});
       if(update.nativeReflow){
-        // This tests editor retention only. The outbound submit payload must
-        // also be checked; the previous mode round-trip was a false positive.
-        stage='verify-native-reflow-roundtrip';
-        await selectEditorMode(page,'basic');
-        await selectEditorMode(page,'html');
-        const roundTrip=await page.locator('.CodeMirror:visible').evaluate(el=>el?.CodeMirror?.getValue?.()||'');
-        if(roundTrip!==targetHtml)throw Error('E_NATIVE_REFLOW_ROUNDTRIP');
-        console.log('UPDATE_NATIVE_REFLOW_STAGED '+JSON.stringify({images:sources.length,roundTrip:true}));
+        // Switching basic -> HTML again can reserialize or replace the edited
+        // CodeMirror value before submit. Keep the new HTML editor active and
+        // require an exact outbound payload via the submit guard below.
+        stage='verify-native-reflow-html-retention';
+        await page.waitForTimeout(700);
+        const retained=await page.locator('.CodeMirror:visible').evaluate(el=>el?.CodeMirror?.getValue?.()||'');
+        if(retained!==targetHtml)throw Error('E_NATIVE_REFLOW_HTML_RETENTION');
+        console.log('UPDATE_NATIVE_REFLOW_STAGED '+JSON.stringify({images:sources.length,htmlRetained:true,outboundGuard:'required'}));
       }
 
       stage='publish-editor-ready';
