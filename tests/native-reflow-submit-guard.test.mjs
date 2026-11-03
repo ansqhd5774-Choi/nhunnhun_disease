@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {assertNativeReflowOutbound,extractSubmittedHtml,isTistoryWriterPost,installNativeReflowSubmitGuard,safeOutboundShape} from '../publishing/native-reflow-submit-guard.mjs';
+import {assertNativeReflowOutbound,extractSubmittedHtml,isTistoryWriterPost,installNativeReflowSubmitGuard,safeOutboundShape,htmlStructure} from '../publishing/native-reflow-submit-guard.mjs';
 
 const expected='<section><h2>충치</h2><figure class="imageblock"><img src="https://blog.kakaocdn.net/dna/photo.jpg"></figure></section>';
 
@@ -33,6 +33,12 @@ test('guard diagnostics show request shape without content or signed image URLs'
   assert.deepEqual(summary.postKeys,['bodyHtml']);
   assert.equal(summary.path,'/manage/post.json');
   assert.ok(!JSON.stringify(summary).includes(secret));
+  const mismatch=safeOutboundShape(JSON.stringify({content:'<p>previous</p>'}),'application/json',
+    'https://nhunnhun.tistory.com/manage/post/469.json','PUT',expected);
+  assert.deepEqual(mismatch.content,htmlStructure('<p>previous</p>'));
+  assert.equal(mismatch.expected.figures,1);
+  assert.equal(mismatch.equal,false);
+  assert.ok(!JSON.stringify(mismatch).includes('previous'));
 });
 
 test('outbound guard blocks mismatched payload before it can be sent',async()=>{
