@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {assertNativeReflowOutbound,extractSubmittedHtml,isTistoryWriterPost,installNativeReflowSubmitGuard,safeOutboundShape,htmlStructure} from '../publishing/native-reflow-submit-guard.mjs';
+import {assertNativeReflowOutbound,extractSubmittedHtml,isTistoryWriterPost,installNativeReflowSubmitGuard,safeOutboundShape,htmlStructure,correctVerifiedPhotoRequest} from '../publishing/native-reflow-submit-guard.mjs';
 
 const expected='<section><h2>충치</h2><figure class="imageblock"><img src="https://blog.kakaocdn.net/dna/photo.jpg"></figure></section>';
 
@@ -23,7 +23,6 @@ test('outbound guard recognizes only Tistory writer posts, excluding image attac
   assert.equal(isTistoryWriterPost('https://nhunnhun.tistory.com/manage/post.json','GET'),false);
   assert.equal(isTistoryWriterPost('https://unrelated.example/manage/post.json','POST'),false);
 });
-
 
 test('guard diagnostics show request shape without content or signed image URLs',()=>{
   const secret='private-data-and-signed-image';
@@ -60,4 +59,25 @@ test('outbound guard permits only an exact submission',async()=>{
   await handler({request:()=>({url:()=> 'https://nhunnhun.tistory.com/manage/post.json',method:()=> 'POST',postData:()=> JSON.stringify({content:expected}),headers:()=>({'content-type':'application/json'})}),continue:async()=>{continued++;},abort:async()=>{throw Error('should not abort');}});
   assert.equal(await guard.assertObserved(),true);
   assert.equal(continued,1);
+});
+
+test('verified corrective PUT changes only old article content and preserves other fields',async()=>{
+  const old='<section><h2>충치</h2>'+Array.from({length:7},(_,i)=>`<img src="legacy-${i}">`).join('')+'</section>';
+  const next='<section><h2>충치</h2>'+Array.from({length:6},(_,i)=>`<figure data-ke-type="image"><img src="native-${i}"></figure>`).join('')+'</section>';
+  const source={id:469,title:'충치',content:old,attachments:[{key:'one'}],visibility:20,csrfToken:'private-value'};
+  const opts={articleId:'469',targetUrl:'https://nhunnhun.tistory.com/469',title:'충치',legacyImages:7,expectedImages:6};
+  const url='https://nhunnhun.tistory.com/manage/post/469.json';
+  const corrected=JSON.parse(correctVerifiedPhotoRequest(JSON.stringify(source),'application/json',next,url,'PUT',opts));
+  assert.deepEqual({...corrected,content:old},source);
+  assert.equal(corrected.content,next);
+  assert.throws(()=>correctVerifiedPhotoRequest(JSON.stringify({...source,title:'other'}),'application/json',next,url,'PUT',opts),/E_NATIVE_REFLOW_OUTBOUND_PATCH_SCHEMA/);
+  assert.throws(()=>correctVerifiedPhotoRequest(JSON.stringify({...source,content:'<p>other</p>'}),'application/json',next,url,'PUT',opts),/E_NATIVE_REFLOW_OUTBOUND_PATCH_SHAPE/);
+  assert.throws(()=>correctVerifiedPhotoRequest(JSON.stringify(source),'application/json',next,url,'POST',opts),/E_NATIVE_REFLOW_OUTBOUND_PATCH_METHOD/);
+  let handler,body;
+  const page={route:async(_,fn)=>{handler=fn;}};
+  const guard=await installNativeReflowSubmitGuard(page,next,opts);
+  await handler({request:()=>({url:()=>url,method:()=> 'PUT',postData:()=>JSON.stringify(source),headers:()=>({'content-type':'application/json'})}),
+    continue:async options=>{body=options.postData;},abort:async()=>{throw Error('must not abort');}});
+  assert.equal(await guard.assertObserved(),true);
+  assert.equal(JSON.parse(body).content,next);
 });
