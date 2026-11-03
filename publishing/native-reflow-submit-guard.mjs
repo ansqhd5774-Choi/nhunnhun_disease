@@ -37,7 +37,14 @@ export function isTistoryWriterPost(requestUrl,method) {
 
 // Safe diagnostics: names and lengths only, never request values, image URLs,
 // auth headers, or HTML. A rejected writer payload remains blocked.
-export function safeOutboundShape(postData,contentType,requestUrl,method) {
+export function htmlStructure(html) {
+  const s=String(html||'');
+  return {length:s.length,images:(s.match(/<img\b/gi)||[]).length,
+    figures:(s.match(/<figure\b/gi)||[]).length,
+    sections:(s.match(/<section\b/gi)||[]).length,
+    headings:(s.match(/<h[23]\b/gi)||[]).length};
+}
+export function safeOutboundShape(postData,contentType,requestUrl,method,expectedHtml=null) {
   const shape={method,path:new URL(requestUrl).pathname,
     contentType:String(contentType).split(';')[0],bytes:String(postData||'').length};
   try {
@@ -49,6 +56,12 @@ export function safeOutboundShape(postData,contentType,requestUrl,method) {
       shape.keys=[...new URLSearchParams(postData).keys()].slice(0,24);
     } else shape.format='other';
   } catch {shape.format='unparseable';}
+  const actual=extractSubmittedHtml(postData,contentType);
+  shape.content=actual===null?null:htmlStructure(actual);
+  if(expectedHtml!==null){
+    shape.expected=htmlStructure(expectedHtml);
+    shape.equal=actual===expectedHtml;
+  }
   return shape;
 }
 
@@ -76,7 +89,7 @@ export async function installNativeReflowSubmitGuard(page,expectedHtml) {
     } catch(error) {
       failure=error.message;
       console.log('UPDATE_NATIVE_REFLOW_GUARD_BLOCKED '+JSON.stringify(
-        safeOutboundShape(request.postData(),request.headers()['content-type']??'',request.url(),request.method())
+        safeOutboundShape(request.postData(),request.headers()['content-type']??'',request.url(),request.method(),expectedHtml)
       ));
       resolveObserved();
       await route.abort('blockedbyclient');
