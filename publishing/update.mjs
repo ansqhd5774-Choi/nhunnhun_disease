@@ -71,7 +71,17 @@ async function captureBasicModeImageFigures(page,imageMap){
     await page.waitForTimeout(400);
   }
   // Diagnostic metadata only: never print signed URLs or editor content.
+  const frameStructure=[];
+  for(const frame of page.frames()){
+    frameStructure.push(await frame.evaluate(()=>({
+      editable:document.querySelectorAll('[contenteditable]').length,
+      image:document.querySelectorAll('img').length,
+      figure:document.querySelectorAll('figure').length,
+      bodyEditable:document.body?.getAttribute('contenteditable')??null
+    })).catch(()=>({unavailable:true})));
+  }
   console.log('UPDATE_NATIVE_IMAGE_PROBE '+JSON.stringify(last));
+  console.log('UPDATE_NATIVE_FRAME_STRUCTURE '+JSON.stringify(frameStructure));
   throw new Error('E_UPDATE_IMAGE_NATIVE_FIGURE');
 }
 
@@ -127,19 +137,6 @@ async function uploadImage(page,sourceUrl,index,tempDir){
     await downloadImage(sourceUrl,path);
     step='editor-focus';
     await focusBasicImageInsertionTarget(page);
-    step='attach-menu';
-    const menu=page.locator('div[aria-label="첨부"] button:visible, #attach-layer-btn:visible').first();
-    if(await menu.count())await menu.click({timeout:10000});
-    else{
-      const clicked=await page.evaluate(()=>{
-        const trigger=document.querySelector('#attach-layer-btn')||
-          document.querySelector('div[aria-label="첨부"] button');
-        if(!trigger)return false;
-        trigger.click();
-        return true;
-      });
-      if(!clicked)throw new Error('E_UPDATE_IMAGE_ATTACH_BUTTON');
-    }
     step='input-probe';
     const input=page.locator('#attach-image');
     const inputCount=await input.count();
@@ -190,7 +187,6 @@ async function uploadImage(page,sourceUrl,index,tempDir){
     const code={
       download:'E_UPDATE_IMAGE_DOWNLOAD_UNEXPECTED',
       'editor-focus':'E_UPDATE_IMAGE_EDITOR_FOCUS',
-      'attach-menu':'E_UPDATE_IMAGE_ATTACH_BUTTON',
       'input-probe':'E_UPDATE_IMAGE_INPUT_PROBE',
       'attach-button':'E_UPDATE_IMAGE_ATTACH_BUTTON',
       'input-attach-wait':'E_UPDATE_IMAGE_INPUT_ATTACH_WAIT',
