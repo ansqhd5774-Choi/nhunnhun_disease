@@ -27,7 +27,8 @@ export function assertNativeReflowOutbound(postData,contentType,expectedHtml) {
 }
 
 export function isTistoryWriterPost(requestUrl,method) {
-  if (method!=='POST')return false;
+  // Existing-article edits may use PUT/PATCH rather than the creation POST.
+  if (!['POST','PUT','PATCH'].includes(method))return false;
   let url;
   try {url=new URL(requestUrl);} catch {return false;}
   return (url.hostname==='tistory.com'||url.hostname.endsWith('.tistory.com'))
@@ -35,7 +36,7 @@ export function isTistoryWriterPost(requestUrl,method) {
 }
 
 // Install immediately before final submit, after photo and thumbnail uploads.
-// All editor-origin POSTs to Tistory then require the exact intended document.
+// All editor-origin mutation requests to Tistory then require the intended document.
 // An unexpected backend request is blocked, not guessed to be safe.
 export async function installNativeReflowSubmitGuard(page,expectedHtml) {
   let observed=false;
