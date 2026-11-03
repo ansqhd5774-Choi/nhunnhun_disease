@@ -1,5 +1,5 @@
 sourceId=direct-469-dental-caries-native-photo-reflow-r3-20261104
 articleId=469
-reason=fresh-six-native-attachments-with-exact-editor-roundtrip
-previousRun=41682957691
+reason=pre-submit-alt-comparison-diagnostic-only
+previousRun=41683580800
 submissionClicked=false
