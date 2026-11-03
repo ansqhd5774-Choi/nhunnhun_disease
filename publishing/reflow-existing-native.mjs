@@ -32,7 +32,11 @@ export function assertLegacyRepairBaseline(originalEditorHtml,spec,imageReview){
   if(imageReview.length!==spec.keepIndices.length)throw Error('E_NATIVE_REFLOW_EXPECTED_PHOTOS');
   for(let i=0;i<imageReview.length;i++){
     const oldAlt=bare[spec.keepIndices[i]].match(/\balt\s*=\s*(["'])(.*?)\1/i)?.[2];
-    if(!oldAlt||oldAlt!==imageReview[i].alt)throw Error('E_NATIVE_REFLOW_ALT_MISMATCH');
+    if(!oldAlt||oldAlt!==imageReview[i].alt){
+      throw Object.assign(Error('E_NATIVE_REFLOW_ALT_MISMATCH'),{
+        details:{index:i,originalIndex:spec.keepIndices[i],originalAlt:oldAlt?.slice(0,110)||null,expectedAlt:imageReview[i].alt.slice(0,110)}
+      });
+    }
   }
   return true;
 }
