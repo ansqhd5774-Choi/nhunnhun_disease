@@ -10,6 +10,14 @@ function imageSource(tag){
   return tag.match(/\bsrc\s*=\s*(["'])([\s\S]*?)\1/i)?.[2]?.replace(/&amp;/g,'&')||'';
 }
 
+function decodeAlt(value){
+  return String(value||'')
+    .replace(/&middot;/gi,'·').replace(/&nbsp;/gi,' ').replace(/&bull;/gi,'•')
+    .replace(/&quot;/gi,'"').replace(/&apos;|&#39;/gi,"'").replace(/&amp;/gi,'&')
+    .replace(/&#(\d+);/g,(_,n)=>String.fromCodePoint(Number(n)))
+    .replace(/&#x([a-f0-9]+);/gi,(_,n)=>String.fromCodePoint(parseInt(n,16)));
+}
+
 export function validateNativeReflow(spec){
   if(!spec||typeof spec!=='object'||Array.isArray(spec))throw Error('E_NATIVE_REFLOW_SCHEMA');
   if(Object.keys(spec).sort().join(',')!=='keepIndices,originalCount')throw Error('E_NATIVE_REFLOW_SCHEMA');
@@ -32,7 +40,7 @@ export function assertLegacyRepairBaseline(originalEditorHtml,spec,imageReview){
   if(imageReview.length!==spec.keepIndices.length)throw Error('E_NATIVE_REFLOW_EXPECTED_PHOTOS');
   for(let i=0;i<imageReview.length;i++){
     const oldAlt=bare[spec.keepIndices[i]].match(/\balt\s*=\s*(["'])(.*?)\1/i)?.[2];
-    if(!oldAlt||oldAlt!==imageReview[i].alt){
+    if(!oldAlt||decodeAlt(oldAlt)!==imageReview[i].alt){
       throw Object.assign(Error('E_NATIVE_REFLOW_ALT_MISMATCH'),{
         details:{index:i,originalIndex:spec.keepIndices[i],originalAlt:oldAlt?.slice(0,110)||null,expectedAlt:imageReview[i].alt.slice(0,110)}
       });
