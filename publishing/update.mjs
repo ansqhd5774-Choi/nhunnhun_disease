@@ -131,7 +131,10 @@ async function downloadImage(url,path){
   throw new Error('E_UPDATE_IMAGE_DOWNLOAD_'+last);
 }
 async function uploadImage(page,sourceUrl,index,tempDir){
-  const path=join(tempDir,`update-image-${index}.bin`);
+  const originalName=decodeURIComponent(new URL(sourceUrl).pathname.split('/').pop()||'');
+  const ext=originalName.match(/\.(jpe?g|png|webp|gif)$/i)?.[1]?.toLowerCase();
+  if(!ext)throw new Error('E_UPDATE_IMAGE_EXTENSION');
+  const path=join(tempDir,`update-image-${index}.${ext==='jpeg'?'jpg':ext}`);
   let step='download';
   try{
     await downloadImage(sourceUrl,path);
@@ -197,7 +200,10 @@ async function uploadImage(page,sourceUrl,index,tempDir){
       throw new Error('E_UPDATE_IMAGE_RESPONSE_TIMEOUT');
     }
     step='response-status';
-    if(uploadResponse.status()!==200) throw new Error('E_UPDATE_IMAGE_UPLOAD_HTTP');
+    if(uploadResponse.status()!==200){
+      console.log('UPDATE_IMAGE_UPLOAD_HTTP_STATUS '+uploadResponse.status());
+      throw new Error('E_UPDATE_IMAGE_UPLOAD_HTTP');
+    }
     step='response-json';
     let data;
     try{
