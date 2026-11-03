@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {reflowExistingNative,validateNativeReflow} from '../publishing/reflow-existing-native.mjs';
+import {reflowExistingNative,validateNativeReflow,assertLegacyRepairBaseline} from '../publishing/reflow-existing-native.mjs';
 
 const spec={originalCount:4,keepIndices:[0,1,3]};
 const image=(n)=>`<img src="https://upload.wikimedia.org/wiki/photo${n}.jpg" alt="Photo ${n}">`;
@@ -22,4 +22,11 @@ test('rejects uncertain counts and censored native placeholders',()=>{
   assert.throws(()=>reflowExistingNative(desired,original+'<img src="extra">',spec,'https://upload.wikimedia.org/wiki/photo0.jpg'),/E_NATIVE_REFLOW_ORIGINAL_COUNTS/);
   assert.throws(()=>reflowExistingNative(desired,original.replace('photo3/img.jpg','pc-image-censoring-v1.gif'),spec,'https://upload.wikimedia.org/wiki/photo0.jpg'),/E_NATIVE_REFLOW_ATTACHMENT_URL/);
   assert.throws(()=>validateNativeReflow({originalCount:4,keepIndices:[1,0,3]}),/E_NATIVE_REFLOW_SCHEMA/);
+});
+
+test('validates the real reopening shape: old bare images but no native figures',()=>{
+  const plain='<div>'+Array.from({length:4},(_,i)=>image(i)).join('')+'</div>';
+  assert.equal(assertLegacyRepairBaseline(plain,spec,[{alt:'Photo 0'},{alt:'Photo 1'},{alt:'Photo 3'}]),true);
+  assert.throws(()=>assertLegacyRepairBaseline(original,spec,[{alt:'Photo 0'},{alt:'Photo 1'},{alt:'Photo 3'}]),/E_NATIVE_REFLOW_ORIGINAL_COUNTS/);
+  assert.throws(()=>assertLegacyRepairBaseline(plain,spec,[{alt:'Photo 0'},{alt:'wrong'},{alt:'Photo 3'}]),/E_NATIVE_REFLOW_ALT_MISMATCH/);
 });
