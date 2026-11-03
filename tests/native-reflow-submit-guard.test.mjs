@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {assertNativeReflowOutbound,extractSubmittedHtml,isTistoryWriterPost,installNativeReflowSubmitGuard} from '../publishing/native-reflow-submit-guard.mjs';
+import {assertNativeReflowOutbound,extractSubmittedHtml,isTistoryWriterPost,installNativeReflowSubmitGuard,safeOutboundShape} from '../publishing/native-reflow-submit-guard.mjs';
 
 const expected='<section><h2>충치</h2><figure class="imageblock"><img src="https://blog.kakaocdn.net/dna/photo.jpg"></figure></section>';
 
@@ -18,8 +18,21 @@ test('outbound guard recognizes only Tistory writer posts, excluding image attac
   assert.equal(isTistoryWriterPost('https://nhunnhun.tistory.com/manage/post/469.json','PUT'),true);
   assert.equal(isTistoryWriterPost('https://nhunnhun.tistory.com/manage/post/469.json','PATCH'),true);
   assert.equal(isTistoryWriterPost('https://nhunnhun.tistory.com/manage/post/attach.json','POST'),false);
+  assert.equal(isTistoryWriterPost('https://nhunnhun.tistory.com/manage/analytics.json','POST'),false);
+  assert.equal(isTistoryWriterPost('https://nhunnhun.tistory.com/manage/post/autosave.json','POST'),false);
   assert.equal(isTistoryWriterPost('https://nhunnhun.tistory.com/manage/post.json','GET'),false);
   assert.equal(isTistoryWriterPost('https://unrelated.example/manage/post.json','POST'),false);
+});
+
+
+test('guard diagnostics show request shape without content or signed image URLs',()=>{
+  const secret='private-data-and-signed-image';
+  const summary=safeOutboundShape(JSON.stringify({title:'충치',csrfToken:secret,post:{bodyHtml:secret}}),
+    'application/json;charset=UTF-8','https://nhunnhun.tistory.com/manage/post.json','POST');
+  assert.deepEqual(summary.keys,['title','csrfToken','post']);
+  assert.deepEqual(summary.postKeys,['bodyHtml']);
+  assert.equal(summary.path,'/manage/post.json');
+  assert.ok(!JSON.stringify(summary).includes(secret));
 });
 
 test('outbound guard blocks mismatched payload before it can be sent',async()=>{
