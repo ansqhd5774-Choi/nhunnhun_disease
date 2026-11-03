@@ -27,6 +27,33 @@ import {runAltMaintenance} from './alt-maintenance-runner.mjs';
 import {captureAltBaseline} from './alt-maintenance-public.mjs';
 import {openPublicBrowser} from './local-browser.mjs';
 
+async function captureBasicModeImageFigures(page,imageMap){
+  const paths=[...imageMap.values()].map(url=>new URL(url).pathname);
+  let last={frames:0,figures:0,matched:0};
+  for(let attempt=0;attempt<12;attempt++){
+    const frames=page.frames();
+    const parts=[];
+    let figures=0;
+    for(const frame of frames){
+      const markup=await frame.evaluate(()=>{
+        return [...document.querySelectorAll('figure')].filter(node=>
+          node.querySelector('img')
+        ).map(node=>node.outerHTML);
+      }).catch(()=>[]);
+      figures+=markup.length;
+      parts.push(...markup);
+    }
+    const html=parts.join('\n');
+    const matched=paths.filter(path=>html.includes(path)).length;
+    last={frames:frames.length,figures,matched};
+    if(matched===paths.length)return html;
+    await page.waitForTimeout(400);
+  }
+  // Diagnostic metadata only: never print signed URLs or editor content.
+  console.log('UPDATE_NATIVE_IMAGE_PROBE '+JSON.stringify(last));
+  throw new Error('E_UPDATE_IMAGE_NATIVE_FIGURE');
+}
+
 function imageSources(html){
   return [...html.matchAll(/<img\b[^>]*\bsrc=(["'])(.*?)\1[^>]*>/gi)].map(m=>m[2]);
 }
@@ -243,8 +270,8 @@ try{
         imageMap.set(sources[i],await uploadImage(page,sources[i],i,tempDir));
       }
       stage='stage-content';
+      const editorWithAttachments=await captureBasicModeImageFigures(page,imageMap);
       await selectEditorMode(page,'html');
-      const editorWithAttachments=await page.locator('.CodeMirror:visible').evaluate(el=>el?.CodeMirror?.getValue?.()||'');
       const targetHtml=restoreNativeImageFigures(rendered,imageMap,update.representativeImageUrl,editorWithAttachments);
       const code=page.locator('.CodeMirror:visible .CodeMirror-code');
       await code.waitFor({state:'visible'});
@@ -332,3 +359,4 @@ try{
   const finalExitCode=process.exitCode||0;
   setTimeout(()=>process.exit(finalExitCode),0);
 }
+
