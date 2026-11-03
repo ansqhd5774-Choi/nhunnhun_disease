@@ -345,48 +345,40 @@ try{
       }
       stage='stage-content';
       const editorWithAttachments=await captureBasicModeImageFigures(page,imageMap);
-      await selectEditorMode(page,'html');
       const targetHtml=restoreNativeImageFigures(rendered,imageMap,update.representativeImageUrl,editorWithAttachments);
-      stage='stage-content';
-      const cm=page.locator('.CodeMirror:visible');
-      await cm.waitFor({state:'visible'});
-      let staged;
+      assertEditorialContract(targetHtml,update.bodyHtml,{version:editorialVersionFor(update)});
       if(update.nativeReflow){
-        // Only this opt-in image repair changes the editor insertion path.
-        // CodeMirror.setValue alone did not update Tistory's submit model.
-        const inputReady=await cm.evaluate(el=>{
-          const editor=el?.CodeMirror;
-          if(!editor||typeof editor.focus!=='function')return false;
-          editor.focus();
-          return editor.hasFocus?.()===true;
-        });
-        if(!inputReady)throw Error('E_UPDATE_CODEMIRROR_NOT_FOCUSED');
-        const oldValue=await cm.evaluate(el=>el.CodeMirror.getValue());
-        await page.keyboard.press('ControlOrMeta+A');
-        const selection=await cm.evaluate(el=>el.CodeMirror.getSelection());
-        if(selection!==oldValue)throw Error('E_UPDATE_CODEMIRROR_SELECT_ALL');
-        await page.keyboard.insertText(targetHtml);
-        staged=await cm.evaluate(el=>el.CodeMirror.getValue());
+        // For this opt-in photo repair, try the active rich editor.
+        // CodeMirror edits alone left the old seven-image HTML in Tistory PUT;
+        // the outbound guard still decides whether this alternative is safe.
+        stage='stage-native-rich-editor';
+        const probe=await page.evaluate(html=>{
+          const editor=window.tinymce?.get?.('editor-tistory')||window.tinyMCE?.get?.('editor-tistory');
+          if(!editor||typeof editor.setContent!=='function'||typeof editor.getContent!=='function')return {available:false};
+          editor.setContent(html);
+          editor.fire?.('change');
+          editor.fire?.('input');
+          editor.save?.();
+          const value=editor.getContent();
+          return {available:true,length:value.length,images:(value.match(/<img\b/gi)||[]).length,
+            figures:(value.match(/<figure\b/gi)||[]).length};
+        },targetHtml);
+        if(!probe.available)throw Error('E_NATIVE_REFLOW_RICH_EDITOR_UNAVAILABLE');
+        if(probe.images!==sources.length||probe.figures!==sources.length)
+          throw Error('E_NATIVE_REFLOW_RICH_EDITOR_SHAPE');
+        console.log('UPDATE_NATIVE_REFLOW_STAGED '+JSON.stringify({...probe,outboundGuard:'required'}));
       } else {
-        staged=await cm.evaluate((el,html)=>{
+        await selectEditorMode(page,'html');
+        const cm=page.locator('.CodeMirror:visible');
+        await cm.waitFor({state:'visible'});
+        const staged=await cm.evaluate((el,html)=>{
           const editor=el?.CodeMirror;
           if(typeof editor?.setValue!=='function')return null;
           editor.setValue(html);
           editor.save?.();
           return editor.getValue();
         },targetHtml);
-      }
-      if(staged!==targetHtml)throw Error('E_UPDATE_CODEMIRROR_STAGE_EXACT');
-      assertEditorialContract(staged,update.bodyHtml,{version:editorialVersionFor(update)});
-      if(update.nativeReflow){
-        // Switching basic -> HTML again can reserialize or replace the edited
-        // CodeMirror value before submit. Keep the new HTML editor active and
-        // require an exact outbound payload via the submit guard below.
-        stage='verify-native-reflow-html-retention';
-        await page.waitForTimeout(700);
-        const retained=await page.locator('.CodeMirror:visible').evaluate(el=>el?.CodeMirror?.getValue?.()||'');
-        if(retained!==targetHtml)throw Error('E_NATIVE_REFLOW_HTML_RETENTION');
-        console.log('UPDATE_NATIVE_REFLOW_STAGED '+JSON.stringify({images:sources.length,htmlRetained:true,outboundGuard:'required'}));
+        if(staged!==targetHtml)throw Error('E_UPDATE_CODEMIRROR_STAGE_EXACT');
       }
 
       stage='publish-editor-ready';
