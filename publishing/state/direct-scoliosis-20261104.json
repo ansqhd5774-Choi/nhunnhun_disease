@@ -1,9 +1,25 @@
 {
-  "phase": "submitting",
+  "phase": "published",
   "fingerprint": "7b378c250da14f60f9a3e9eb056d3e3f9d0c95aab233d8a50f3cc3897622686d",
-  "sourceCommit": "9ff78e393b33c502cdcca4357fcf6ede2187c7b3",
-  "editorialTemplateVersion": "R4",
-  "timestamp": "2026-11-04T06:21:11.080Z",
   "url": "https://nhunnhun.tistory.com/472",
-  "verificationPhase": "public-verification"
+  "editorialTemplateVersion": "SP1",
+  "timestamp": "2026-11-04T06:21:41.081Z",
+  "sourceCommit": "9ff78e393b33c502cdcca4357fcf6ede2187c7b3",
+  "runUrl": "https://github.com/ansqhd5774-Choi/nhunnhun_disease/actions/runs/41784771740",
+  "publicResult": {
+    "status": "PUBLIC_VERIFIED",
+    "sourceId": "direct-scoliosis-20261104",
+    "url": "https://nhunnhun.tistory.com/472",
+    "checkedAt": "2026-11-04T06:21:41.081Z",
+    "checks": [
+      "title",
+      "body",
+      "images",
+      "representative",
+      "emphasis",
+      "desktop",
+      "mobile"
+    ],
+    "semanticVerification": "not-performed"
+  }
 }
