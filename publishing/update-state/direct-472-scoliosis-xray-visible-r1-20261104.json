@@ -6,5 +6,16 @@
   "sourceCommit": "6c6ebcb876f109ce9067c766d4885a3195daafe2",
   "editorialTemplateVersion": "R4",
   "timestamp": "2026-11-04T06:30:14.610Z",
-  "runUrl": "https://github.com/ansqhd5774-Choi/nhunnhun_disease/actions/runs/41785823667"
+  "runUrl": "https://github.com/ansqhd5774-Choi/nhunnhun_disease/actions/runs/41785823667",
+  "publicResult": {
+    "sourceId": "direct-472-scoliosis-xray-visible-r1-20261104",
+    "url": "https://nhunnhun.tistory.com/472",
+    "sourceCommit": "6c6ebcb876f109ce9067c766d4885a3195daafe2",
+    "fingerprint": "de970b18430b47bd512cbcc74324d0b5982f3ecc101ae4f84682d765165123b1",
+    "runUrl": "https://github.com/ansqhd5774-Choi/nhunnhun_disease/actions/runs/41785823667",
+    "checkedAt": "2026-11-04T06:30:16.308Z",
+    "verificationRunUrl": "https://github.com/ansqhd5774-Choi/nhunnhun_disease/actions/runs/41785823667",
+    "status": "PUBLIC_VERIFICATION_MISMATCH",
+    "code": "E_QA_BODY"
+  }
 }
